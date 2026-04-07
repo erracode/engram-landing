@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { Header } from '../components/layout/Header'
+import { Hero } from '../components/sections/Hero'
+---
+
+<BaseLayout title="Engram — Persistent Memory for AI Coding Agents">
+  <div class="h-screen w-screen overflow-hidden bg-black flex flex-col">
+    <Header client:load />
+    <main class="flex-1 relative">
+      <Hero client:load />
+    </main>
+  </div>
+</BaseLayout>
