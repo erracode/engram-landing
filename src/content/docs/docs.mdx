@@ -1,0 +1,358 @@
+---
+title: "Documentation"
+description: "Complete documentation index for Engram"
+order: 7
+tags: ["documentation", "index", "reference"]
+---
+
+# Documentation
+
+Complete reference for Engram. Choose a topic to learn more.
+
+---
+
+## Quick Links
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+
+### [Installation](#installation)
+Install Engram on macOS, Linux, or Windows.
+
+### [Agent Setup](#agent-setup)
+Configure Engram with your preferred agent.
+
+### [Architecture](#architecture)
+How Engram works: MCP tools, SQLite + FTS5, session lifecycle.
+
+### [MCP Tools](#mcp-tools)
+Complete reference for all 15 MCP tools.
+
+### [Terminal UI](#tui)
+Interactive terminal UI with vim-style navigation.
+
+### [Git Sync](#git-sync)
+Share memories across machines with compressed chunks.
+
+</div>
+
+---
+
+## Detailed Documentation
+
+<div id="installation">
+
+### Installation
+
+<div class="bg-[#0a0a0a] p-4 rounded border border-[#222222]">
+
+**Homebrew (macOS / Linux):**
+```bash
+brew install gentleman-programming/tap/engram
+```
+
+**Windows:**
+```powershell
+go install github.com/Gentleman-Programming/engram/cmd/engram@latest
+```
+
+[Full installation guide →](https://github.com/Gentleman-Programming/engram/blob/main/docs/INSTALLATION.md)
+
+</div>
+
+---
+
+</div>
+
+<div id="agent-setup">
+
+### Agent Setup
+
+**Supported Agents:**
+
+| Agent | Setup Command |
+|-------|---------------|
+| Claude Code | `claude plugin marketplace add Gentleman-Programming/engram` |
+| OpenCode | `engram setup opencode` |
+| Gemini CLI | `engram setup gemini-cli` |
+| Codex | `engram setup codex` |
+| VS Code | `code --add-mcp '{"name":"engram","command":"engram","args":["mcp"]}'` |
+| Cursor | `.cursor/mcp.json` |
+| Windsurf | `~/.windsurf/mcp.json` |
+
+[Full agent setup guide →](https://github.com/Gentleman-Programming/engram/blob/main/docs/AGENT-SETUP.md)
+
+</div>
+
+---
+
+<div id="architecture">
+
+### Architecture
+
+**Core Components:**
+
+- **MCP Server** — 15 tools for memory management
+- **SQLite + FTS5** — Persistent storage with full-text search
+- **HTTP API** — REST API (port 7437)
+- **CLI** — Command-line interface
+- **TUI** — Interactive terminal UI
+- **Git Sync** — Cross-machine sync with compressed chunks
+
+**Session Lifecycle:**
+1. Agent works and saves memories proactively
+2. Session ends with summary
+3. Next session injects previous context
+4. Memories persist across sessions
+
+[Full architecture guide →](https://github.com/Gentleman-Programming/engram/blob/main/docs/ARCHITECTURE.md)
+
+---
+
+</div>
+
+<div id="mcp-tools">
+
+### MCP Tools
+
+**15 Tools for Memory Management:**
+
+- `mem_save` — Save structured observations
+- `mem_search` — Full-text search with FTS5
+- `mem_timeline` — Chronological context
+- `mem_context` — Recent session context
+- `mem_session_summary` — End-of-session summary
+- `mem_update` — Update existing observations
+- `mem_delete` — Soft or hard delete
+- `mem_get_observation` — Get full content
+- `mem_suggest_topic_key` — Suggest stable topic keys
+- `mem_stats` — Memory statistics
+- `mem_session_start` — Register session start
+- `mem_session_end` — Mark session complete
+- `mem_save_prompt` — Save user prompts
+- `mem_capture_passive` — Extract learnings from text
+- `mem_merge_projects` — Merge project variants
+
+[Complete MCP tools reference →](https://github.com/Gentleman-Programming/engram/blob/main/docs/ARCHITECTURE.md#mcp-tools)
+
+---
+
+</div>
+
+<div id="tui">
+
+### Terminal UI
+
+**Features:**
+- Vim-style navigation (`j/k`, `Enter`, `/`, `Esc`)
+- Catppuccin Mocha theme
+- Dashboard, Detail, Search, Timeline views
+- Quick save, search, sync, export
+
+**Launch:**
+```bash
+engram tui
+```
+
+[Terminal UI guide →](https://github.com/Gentleman-Programming/engram/blob/main/docs/ARCHITECTURE.md#terminal-ui)
+
+---
+
+</div>
+
+<div id="git-sync">
+
+### Git Sync
+
+**Share memories across machines:**
+
+```bash
+engram sync                    # Export chunks
+git add .engram/ && git commit -m "sync memories"
+engram sync --import           # Import on another machine
+```
+
+**Benefits:**
+- No merge conflicts (append-only chunks)
+- Compressed storage (~10-50KB per chunk)
+- Full-text search preserved
+- Soft-delete support
+
+[Git Sync guide →](https://github.com/Gentleman-Programming/engram/blob/main/DOCS.md#git-sync)
+
+---
+
+</div>
+
+<div id="plugins">
+
+### Plugins
+
+**OpenCode Plugin:**
+- Session tracking
+- Memory Protocol enforcement
+- Compaction recovery
+
+**Claude Code Plugin:**
+- Session hooks
+- Auto-import memories
+- Memory Protocol skill
+- Compaction recovery
+
+[Plugin details →](https://github.com/Gentleman-Programming/engram/blob/main/docs/PLUGINS.md)
+
+---
+
+</div>
+
+<div id="comparison">
+
+### Comparison
+
+**Engram vs claude-mem:**
+
+| Feature | Engram | claude-mem |
+|---------|--------|------------|
+| Agent support | Multiple (MCP) | Claude only |
+| Storage | SQLite + FTS5 | JSON files |
+| Search | Full-text (FTS5) | Limited |
+| CLI | Complete | Basic |
+| Git Sync | Native | Manual |
+| Plugins | OpenCode, Claude | Claude only |
+| TUI | Interactive | None |
+| HTTP API | Yes | No |
+| Dependencies | Zero | Node.js |
+
+[Why Engram →](https://github.com/Gentleman-Programming/engram/blob/main/docs/COMPARISON.md)
+
+---
+
+</div>
+
+<div id="contributing">
+
+### Contributing
+
+**Contribution workflow:**
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes
+4. Add tests
+5. Update documentation
+6. Submit PR
+
+**Standards:**
+- Follow existing code style
+- Write comprehensive tests
+- Update CHANGELOG.md
+- Keep PRs small and focused
+- Get LGTM from maintainer
+
+[Contributing guide →](https://github.com/Gentleman-Programming/engram/blob/main/CONTRIBUTING.md)
+
+---
+
+</div>
+
+---
+
+## Additional Resources
+
+<div class="space-y-4">
+
+### Memory Protocol
+
+The Memory Protocol tells agents when to save and search memories:
+
+```markdown
+## Memory
+You have access to Engram persistent memory via MCP tools (mem_save, mem_search, mem_session_summary, etc.).
+- Save proactively after significant work — don't wait to be asked.
+- After any compaction or context reset, call `mem_context` to recover session state before continuing.
+```
+
+[Full Memory Protocol →](https://github.com/Gentleman-Programming/engram/blob/main/DOCS.md#memory-protocol-full-text)
+
+---
+
+### CLI Reference
+
+```
+engram setup [agent]      Install/setup agent integration
+engram serve [port]       Start HTTP API server
+engram mcp                Start MCP server
+engram tui                Launch interactive terminal UI
+engram search <query>     Search memories
+engram save <title> <msg> Save a memory
+engram timeline <obs_id>  Chronological context
+engram context [project]  Recent context
+engram stats              Memory statistics
+engram export [file]      Export to JSON
+engram import <file>      Import from JSON
+engram sync               Export chunks to .engram/
+engram projects list      Show project stats
+engram version            Show version
+```
+
+[Full CLI reference →](https://github.com/Gentleman-Programming/engram/blob/main/DOCS.md#cli-reference)
+
+---
+
+### Project Structure
+
+```
+engram/
+├── cmd/engram/main.go              # CLI entrypoint
+├── internal/
+│   ├── store/store.go              # Core: SQLite + FTS5
+│   ├── server/server.go            # HTTP REST API
+│   ├── mcp/mcp.go                  # MCP stdio server
+│   ├── setup/setup.go              # Plugin installer
+│   ├── project/                     # Project detection
+│   ├── sync/sync.go                # Git sync
+│   └── tui/                        # Terminal UI
+├── plugin/
+│   ├── opencode/engram.ts          # OpenCode plugin
+│   └── claude-code/                # Claude plugin
+├── skills/                         # Contributor AI skills
+├── DOCS.md                         # Full documentation
+└── CONTRIBUTING.md                 # Contribution guide
+```
+
+[Architecture details →](https://github.com/Gentleman-Programming/engram/blob/main/DOCS.md#project-structure)
+
+---
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ENGRAM_DATA_DIR` | Data directory | `~/.engram` |
+| `ENGRAM_PORT` | HTTP server port | `7437` |
+
+[Installation details →](https://github.com/Gentleman-Programming/engram/blob/main/docs/INSTALLATION.md#environment-variables)
+
+---
+
+</div>
+
+---
+
+## Support
+
+- **GitHub Issues** — Report bugs or request features
+- **GitHub Discussions** — Ask questions or suggest ideas
+- **Discord** — Community support (coming soon)
+- **Email** — Contact maintainers
+
+[GitHub repository →](https://github.com/Gentleman-Programming/engram)
+
+---
+
+## License
+
+MIT
+
+---
+
+**Inspired by [claude-mem](https://github.com/thedotmack/claude-mem)** — but agent-agnostic, simpler, and built different.

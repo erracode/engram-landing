@@ -1,11 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { MemorySimulator } from '../components/simulator/MemorySimulator'
+import { EngramOS } from '../components/layout/EngramOS'
 ---
 
-<BaseLayout title="Engram">
-  <div class="h-screen w-screen overflow-hidden bg-[#000000] m-0 p-0">
-    <MemorySimulator client:only="react" />
-  </div>
+<BaseLayout title="Engram — Persistent Memory for AI Agents">
+  <EngramOS client:only="react" />
 </BaseLayout>
-
