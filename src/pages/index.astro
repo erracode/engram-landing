@@ -1,14 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { Header } from '../components/layout/Header'
-import { Hero } from '../components/sections/Hero'
+import { MemorySimulator } from '../components/simulator/MemorySimulator'
 ---
 
-<BaseLayout title="Engram — Persistent Memory for AI Coding Agents">
-  <div class="h-screen w-screen overflow-hidden bg-black flex flex-col">
-    <Header client:load />
-    <main class="flex-1 relative">
-      <Hero client:load />
-    </main>
+<BaseLayout title="Engram">
+  <div class="h-screen w-screen overflow-hidden bg-[#000000] m-0 p-0">
+    <MemorySimulator client:only="react" />
   </div>
 </BaseLayout>
+
