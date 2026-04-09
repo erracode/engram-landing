@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TilesetGrid } from './TilesetGrid'
+import { EngramBranding } from './EngramBranding'
 
 function IsometricCamera() {
   const { camera } = useThree()
@@ -46,6 +47,7 @@ export function MemorySimulator() {
 
 
       <TilesetGrid />
+      <EngramBranding />
     </Canvas>
   )
 }
