@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface MemoryLog {
   id: string
@@ -8,14 +9,57 @@ export interface MemoryLog {
   timestamp: number
 }
 
+export interface WindowPosition {
+  x: number
+  y: number
+}
+
+export interface WindowSize {
+  width: number
+  height: number
+}
+
+export interface MDXWindow {
+  id: string
+  title: string
+  content: string
+  isOpen: boolean
+  isMinimized: boolean
+  isMaximized: boolean
+  position: WindowPosition
+  size: WindowSize
+  zIndex: number
+}
+
 interface MemoryStore {
+  // Logs and stats
   logs: MemoryLog[]
   totalMemories: number
   activeAgents: string[]
-  activeWindow: string | null
+  
+  // Multiple windows
+  activeWindows: Record<string, MDXWindow>
+  focusedWindowId: string | null
+  nextZIndex: number
+  
+  // Actions for logs
   addLog: (log: Omit<MemoryLog, 'id' | 'timestamp'>) => void
   incrementMemories: () => void
   setAgents: (agents: string[]) => void
+  
+  // Actions for windows
+  openWindow: (id: string, title: string, content: string, position?: WindowPosition) => void
+  closeWindow: (id: string) => void
+  toggleMinimize: (id: string) => void
+  toggleMaximize: (id: string) => void
+  updateWindowPosition: (id: string, position: WindowPosition) => void
+  focusWindow: (id: string) => void
+  closeAllWindows: () => void
+  restoreMinimizedWindow: (id: string) => void
+  bringToFront: (id: string) => void
+  
+  // Legacy single window (for backward compatibility)
+  activeWindow: string | null
   setActiveWindow: (window: string | null) => void
 }
 
@@ -32,12 +76,65 @@ const SAMPLE_LOGS = [
   { type: 'mem_timeline', message: 'drilling into obs #4721', status: 'success' as const },
 ]
 
-export const useMemoryStore = create<MemoryStore>((set) => ({
+// Default window configurations
+const DEFAULT_WINDOW_CONFIG: Record<string, { title: string; position: WindowPosition; size: WindowSize }> = {
+  kernel: {
+    title: 'KERNEL',
+    position: { x: 100, y: 80 },
+    size: { width: 800, height: 600 }
+  },
+  installation: {
+    title: 'INSTALLATION',
+    position: { x: 120, y: 100 },
+    size: { width: 750, height: 550 }
+  },
+  agentSetup: {
+    title: 'AGENT SETUP',
+    position: { x: 140, y: 120 },
+    size: { width: 780, height: 580 }
+  },
+  architecture: {
+    title: 'ARCHITECTURE',
+    position: { x: 160, y: 140 },
+    size: { width: 820, height: 620 }
+  },
+  mcpTools: {
+    title: 'MCP TOOLS',
+    position: { x: 180, y: 160 },
+    size: { width: 800, height: 600 }
+  },
+  tui: {
+    title: 'TERMINAL UI',
+    position: { x: 200, y: 180 },
+    size: { width: 850, height: 650 }
+  },
+  gitSync: {
+    title: 'GIT SYNC',
+    position: { x: 220, y: 200 },
+    size: { width: 780, height: 580 }
+  },
+  docs: {
+    title: 'DOCUMENTATION',
+    position: { x: 240, y: 220 },
+    size: { width: 880, height: 680 }
+  },
+}
+
+export const useMemoryStore = create<MemoryStore>()((set, get) => ({
+  // Logs and stats
   logs: [],
   totalMemories: 0,
   activeAgents: ['Claude Code', 'OpenCode'],
+  
+  // Multiple windows
+  activeWindows: {},
+  focusedWindowId: null,
+  nextZIndex: 100,
+  
+  // Legacy single window
   activeWindow: null,
-
+  
+  // Actions for logs
   addLog: (log) =>
     set((state) => ({
       logs: [
@@ -50,8 +147,140 @@ export const useMemoryStore = create<MemoryStore>((set) => ({
     set((state) => ({ totalMemories: state.totalMemories + 1 })),
 
   setAgents: (agents) => set({ activeAgents: agents }),
+  
+  // Legacy single window action
+  setActiveWindow: (window) => {
+    set({ activeWindow: window })
+    
+    if (window === null) {
+      // Close all windows if legacy action clears
+      set({ activeWindows: {} })
+    }
+  },
+  
+  // Actions for windows
+  openWindow: (id, title, content, position) =>
+    set((state) => {
+      const config = DEFAULT_WINDOW_CONFIG[id]
+      if (!config) return {}
+      
+      const existingWindow = state.activeWindows[id]
+      
+      return {
+        activeWindows: {
+          ...state.activeWindows,
+          [id]: {
+            id,
+            title: config.title,
+            content,
+            isOpen: true,
+            isMinimized: false,
+            isMaximized: false,
+            position: position || config.position,
+            size: config.size,
+            zIndex: state.nextZIndex,
+          },
+        },
+        focusedWindowId: id,
+        nextZIndex: state.nextZIndex + 1,
+        activeWindow: id, // Also set legacy for backward compatibility
+      }
+    }),
 
-  setActiveWindow: (window) => set({ activeWindow: window }),
+  closeWindow: (id) =>
+    set((state) => {
+      const { [id]: _, ...remainingWindows } = state.activeWindows
+      
+      const closedIds = Object.keys(state.activeWindows)
+      const remainingIds = Object.keys(remainingWindows)
+      
+      return {
+        activeWindows: remainingWindows,
+        focusedWindowId: remainingIds.length > 0 ? remainingIds[0] : null,
+        activeWindow: remainingIds.length > 0 ? remainingIds[0] : null,
+      }
+    }),
+
+  toggleMinimize: (id) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          isMinimized: !state.activeWindows[id].isMinimized,
+        },
+      },
+    })),
+
+  toggleMaximize: (id) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          isMaximized: !state.activeWindows[id].isMaximized,
+        },
+      },
+    })),
+
+  updateWindowPosition: (id, position) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          position,
+        },
+      },
+    })),
+
+  focusWindow: (id) =>
+    set((state) => ({
+      focusedWindowId: id,
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          isMinimized: false,
+          zIndex: state.nextZIndex,
+        },
+      },
+      nextZIndex: state.nextZIndex + 1,
+    })),
+
+  closeAllWindows: () =>
+    set({
+      activeWindows: {},
+      focusedWindowId: null,
+      activeWindow: null,
+    }),
+
+  restoreMinimizedWindow: (id) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          isMinimized: false,
+          zIndex: state.nextZIndex,
+        },
+      },
+      focusedWindowId: id,
+      nextZIndex: state.nextZIndex + 1,
+    })),
+
+  bringToFront: (id) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          zIndex: state.nextZIndex,
+        },
+      },
+      focusedWindowId: id,
+      nextZIndex: state.nextZIndex + 1,
+    })),
 }))
 
 let logIndex = 0

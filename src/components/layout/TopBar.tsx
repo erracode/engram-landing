@@ -1,5 +1,16 @@
-import { useState, useEffect } from 'react'
 import { useMemoryStore } from '../../stores/memoryStore'
+import { MDX_CONTENT_MAP } from '../../utils/mdxContentMap'
+
+const NAV_ITEMS = [
+  { id: 'kernel', label: 'KERNEL', title: 'KERNEL', content: MDX_CONTENT_MAP.kernel },
+  { id: 'installation', label: 'INSTALL', title: 'INSTALLATION', content: MDX_CONTENT_MAP.installation },
+  { id: 'agentSetup', label: 'AGENTS', title: 'AGENT SETUP', content: MDX_CONTENT_MAP.agentSetup },
+  { id: 'architecture', label: 'ARCH', title: 'ARCHITECTURE', content: MDX_CONTENT_MAP.architecture },
+  { id: 'mcpTools', label: 'TOOLS', title: 'MCP TOOLS', content: MDX_CONTENT_MAP.mcpTools },
+  { id: 'tui', label: 'TUI', title: 'TERMINAL UI', content: MDX_CONTENT_MAP.tui },
+  { id: 'gitSync', label: 'SYNC', title: 'GIT SYNC', content: MDX_CONTENT_MAP.gitSync },
+  { id: 'docs', label: 'DOCS', title: 'DOCUMENTATION', content: MDX_CONTENT_MAP.docs },
+]
 
 function GithubIcon() {
   return (
@@ -10,34 +21,18 @@ function GithubIcon() {
   )
 }
 
-const NAV_ITEMS = [
-  { id: 'kernel', label: 'KERNEL' },
-  { id: 'install', label: 'INSTALL' },
-  { id: 'tools', label: 'TOOLS' },
-  { id: 'architecture', label: 'ARCH' },
-  { id: 'docs', label: 'DOCS' },
-]
-
 export function TopBar() {
-  const [time, setTime] = useState('')
-  const setActiveWindow = useMemoryStore((s) => s.setActiveWindow)
-  const activeWindow = useMemoryStore((s) => s.activeWindow)
-  const totalMemories = useMemoryStore((s) => s.totalMemories)
+  const openWindow = useMemoryStore((s) => s.openWindow)
+  const closeWindow = useMemoryStore((s) => s.closeWindow)
+  const activeWindows = useMemoryStore((s) => s.activeWindows)
 
-  useEffect(() => {
-    const tick = () => {
-      const now = new Date()
-      setTime(
-        now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
-      )
+  const toggle = (item: typeof NAV_ITEMS[0]) => {
+    const isOpen = activeWindows[item.id] && activeWindows[item.id].isOpen
+    if (isOpen) {
+      closeWindow(item.id)
+    } else {
+      openWindow(item.id, item.title, item.content)
     }
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  const toggle = (id: string) => {
-    setActiveWindow(activeWindow === id ? null : id)
   }
 
   return (
@@ -48,25 +43,25 @@ export function TopBar() {
         left: 0,
         right: 0,
         zIndex: 100,
-        height: '36px',
-        background: 'rgba(0, 0, 0, 0.92)',
-        borderBottom: '1px solid #222222',
+        height: '48px',
+        background: 'rgba(0, 0, 0, 0.95)',
+        borderBottom: '1px solid #333333',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 16px',
+        padding: '0 24px',
         fontFamily: "'Space Mono', 'JetBrains Mono', monospace",
-        fontSize: '11px',
+        fontSize: '12px',
         letterSpacing: '0.06em',
         userSelect: 'none',
       }}
     >
-      {/* Left: Brand + Status */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+      {/* Left: Brand */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <span
           style={{
             fontFamily: "'Doto', 'Space Mono', monospace",
-            fontSize: '14px',
+            fontSize: '18px',
             fontWeight: 700,
             color: '#ffffff',
             letterSpacing: '-0.02em',
@@ -74,50 +69,44 @@ export function TopBar() {
         >
           ENGRAM
         </span>
-        <span style={{ color: '#666666', fontSize: '10px' }}>
-          AGENT_STATUS: <span style={{ color: '#4a9e5c' }}>IDLE</span>
-        </span>
-        <span style={{ color: '#666666', fontSize: '10px' }}>
-          MEM: <span style={{ color: '#00f2ff' }}>{totalMemories}</span>
-        </span>
       </div>
 
       {/* Center: Navigation */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-        {NAV_ITEMS.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => toggle(item.id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px 10px',
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '11px',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              color: activeWindow === item.id ? '#ffffff' : '#999999',
-              borderBottom: activeWindow === item.id ? '1px solid #00f2ff' : '1px solid transparent',
-              transition: 'color 200ms, border-color 200ms',
-            }}
-            onMouseEnter={(e) => {
-              if (activeWindow !== item.id) e.currentTarget.style.color = '#e8e8e8'
-            }}
-            onMouseLeave={(e) => {
-              if (activeWindow !== item.id) e.currentTarget.style.color = '#999999'
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
+        {NAV_ITEMS.map((item) => {
+          const isOpen = activeWindows[item.id] && activeWindows[item.id].isOpen
+          return (
+            <button
+              key={item.id}
+              onClick={() => toggle(item)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px 14px',
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '12px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: isOpen ? '#ffffff' : '#999999',
+                borderBottom: isOpen ? '2px solid #00f2ff' : '2px solid transparent',
+                transition: 'color 150ms, border-color 150ms',
+              }}
+              onMouseEnter={(e) => {
+                if (!isOpen) e.currentTarget.style.color = '#e8e8e8'
+              }}
+              onMouseLeave={(e) => {
+                if (!isOpen) e.currentTarget.style.color = '#999999'
+              }}
+            >
+              {item.label}
+            </button>
+          )
+        })}
       </nav>
 
-      {/* Right: Clock + GitHub */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <span style={{ color: '#666666', fontSize: '10px', fontVariantNumeric: 'tabular-nums' }}>
-          {time}
-        </span>
+      {/* Right: GitHub */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <a
           href="https://github.com/Gentleman-Programming/engram"
           target="_blank"
