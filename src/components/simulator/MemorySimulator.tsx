@@ -3,6 +3,8 @@ import { Canvas, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TilesetGrid } from './TilesetGrid'
 import { EngramBranding } from './EngramBranding'
+import { ArchitectureSchematics } from './ArchitectureSchematics'
+import { ElephantCore } from './ElephantCore'
 
 function IsometricCamera() {
   const { camera } = useThree()
@@ -10,7 +12,6 @@ function IsometricCamera() {
   useEffect(() => {
     if (!(camera instanceof THREE.OrthographicCamera)) return
     
-    // Classic isometric positioning, but scaled up visually matching the RTS reference 
     camera.position.set(40, 35, 40)
     camera.zoom = 60
     camera.lookAt(0, 0, 0)
@@ -48,6 +49,8 @@ export function MemorySimulator() {
 
       <TilesetGrid />
       <EngramBranding />
+      <ArchitectureSchematics />
+      <ElephantCore />
     </Canvas>
   )
 }
