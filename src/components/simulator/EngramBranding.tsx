@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { Edges } from '@react-three/drei'
+import { useMemoryStore } from '../../stores/memoryStore'
 
 function createGradientTexture() {
   const canvas = document.createElement('canvas')
@@ -86,8 +87,13 @@ export function EngramBranding() {
     return letters.map((l) => createTextTextures(l))
   }, [])
 
+  const handleTileClick = () => {
+    // Open KERNEL window when any branding tile is clicked
+    // This will be handled by the parent component
+  }
+
   return (
-    <group>
+    <group onClick={handleTileClick}>
       {letters.map((letter, idx) => {
         // Center position X: 
         // E: -2.5, N: -1.5, G: -0.5, R: 0.5, A: 1.5, M: 2.5
@@ -101,6 +107,10 @@ export function EngramBranding() {
             baseGradientMap={baseGradientMap}
             // Position at Y=0.49 since cube is 0.98 tall, resting exactly on top
             position={[xPos, 0.49, -9.5]}
+            onInteract={() => {
+              const openWindow = useMemoryStore.getState().openWindow
+              openWindow('KERNEL', 'Kernel Interface', '## Kernel Interface\n\nThe Engram kernel provides persistent memory for AI agents, enabling context retention across sessions.')
+            }}
           />
         )
       })}
@@ -108,7 +118,7 @@ export function EngramBranding() {
   )
 }
 
-function EngramTile({ position, textures, baseGradientMap, text }: any) {
+function EngramTile({ position, textures, baseGradientMap, text, onInteract }: any) {
   // Use 0.98 dimensions to leave a 2% gap between adjacent blocks, exactly like TilesetGrid
   // This prevents edges from clipping/overlapping between blocks
   const geometry = useMemo(() => new THREE.BoxGeometry(0.98, 0.98, 0.98), [])
@@ -157,6 +167,17 @@ function EngramTile({ position, textures, baseGradientMap, text }: any) {
 
   return (
     <group position={position}>
+      {/* Interactive overlay for click detection */}
+      <mesh
+        geometry={geometry}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (onInteract) onInteract()
+        }}
+      >
+        <meshBasicMaterial visible={false} />
+      </mesh>
+
       {/* Opaque hardware block */}
       <mesh geometry={geometry} material={materials} castShadow receiveShadow>
         {/* Drei Edges allow true line thickness in WebGL */}

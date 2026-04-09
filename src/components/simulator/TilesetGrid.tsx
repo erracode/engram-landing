@@ -1,5 +1,6 @@
 import { useRef, useMemo, useEffect } from 'react'
 import * as THREE from 'three'
+import { getBlackMarbleTextures } from './MaterialUtils'
 
 const GRID_SIZE = 20
 const GRID_DEPTH = 12
@@ -14,9 +15,19 @@ export function TilesetGrid() {
   const { geometry, materials, edgeGrid } = useMemo(() => {
     const boxGeo = new THREE.BoxGeometry(TILE_SIZE, TILE_SIZE, TILE_SIZE)
     
+    const textures = getBlackMarbleTextures('floor')
+
     // Exact colors ensuring OLED aesthetics
-    const sideParams = { color: '#050505', roughness: 0.9, metalness: 0.1 }
-    const topParams = { color: '#0a0a0a', roughness: 0.9, metalness: 0.1 }
+    const sideParams = { 
+      color: '#050505', roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: '#0a0a0a', emissiveMap: textures.emiTex, emissiveIntensity: 0.02
+    }
+    const topParams = { 
+      color: '#0a0a0a', roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: '#00f2ff', emissiveMap: textures.emiTex, emissiveIntensity: 0.03
+    }
     const bottomParams = { color: '#000000', roughness: 0.9, metalness: 0.1 }
     
     const mats = [

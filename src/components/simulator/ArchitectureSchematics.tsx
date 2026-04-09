@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { Edges, Html } from '@react-three/drei'
 import { useMemoryStore } from '../../stores/memoryStore'
+import { getBlackMarbleTextures } from './MaterialUtils'
 
 // Nothing Design tokens mapped to 3D materials
 const BODY = '#050505'
@@ -46,6 +47,8 @@ function TerminalLabel({ text, secondary, yOffset = 1.2 }: { text: string; secon
 
 function FlowTrace({ points, color }: { points: [number, number, number][]; color: string }) {
   const matRef = useRef<THREE.LineBasicMaterial>(null)
+  const particleRef = useRef<THREE.Mesh>(null)
+  
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry()
     const verts = new Float32Array(points.flat())
@@ -54,17 +57,34 @@ function FlowTrace({ points, color }: { points: [number, number, number][]; colo
   }, [points])
 
   useFrame(({ clock }) => {
+    const t = clock.elapsedTime
     if (matRef.current) {
-      const t = clock.elapsedTime % 3
-      const wave = Math.sin((t / 3) * Math.PI)
+      const wave = Math.sin(t * 2) * 0.5 + 0.5
       matRef.current.opacity = 0.3 + wave * 0.7
+    }
+    if (particleRef.current && points.length >= 2) {
+      // Very simple linear interpolation between the first two points
+      const p1 = new THREE.Vector3(...points[0])
+      const p2 = new THREE.Vector3(...points[points.length - 1])
+      // Walk particle along the line
+      const cycle = (t * 0.5) % 1.0
+      particleRef.current.position.lerpVectors(p1, p2, cycle)
+      const particleMat = particleRef.current.material as THREE.MeshBasicMaterial
+      particleMat.opacity = Math.sin(cycle * Math.PI) // fade in and out
     }
   })
 
   return (
-    <line geometry={geometry}>
-      <lineBasicMaterial ref={matRef} color={color} transparent opacity={0.85} />
-    </line>
+    <group>
+      <line geometry={geometry}>
+        <lineBasicMaterial ref={matRef} color={color} transparent opacity={0.85} />
+      </line>
+      <mesh ref={particleRef}>
+        <sphereGeometry args={[0.08, 8, 8]} />
+        <meshBasicMaterial color={color} transparent opacity={0.5} />
+        <pointLight color={color} intensity={0.5} distance={1} />
+      </mesh>
+    </group>
   )
 }
 
@@ -97,16 +117,20 @@ function MicroVoxels() {
     { pos: [9, 0.15, 2], edge: true }, { pos: [-2, 0.15, -8], edge: false },
     { pos: [6, 0.15, -5], edge: true }, { pos: [-9, 0.15, 5], edge: false },
     { pos: [1, 0.15, -3], edge: true },
-  ], [])
+  ].map(v => ({ ...v, rot: [Math.random() * Math.PI, Math.random() * Math.PI, 0] as [number, number, number] })), [])
 
-  const geo = useMemo(() => new THREE.BoxGeometry(0.3, 0.3, 0.3), [])
-  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#1a1a1a', roughness: 0.9, metalness: 0.1 }), [])
+  const textures = useMemo(() => getBlackMarbleTextures('voxel'), [])
+  const geo = useMemo(() => new THREE.BoxGeometry(0.15, 0.15, 0.15), [])
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({ 
+    color: '#080808', roughness: 0.9, metalness: 0.1,
+    map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05
+  }), [textures])
 
   return (
     <group>
       {voxels.map((v, i) => (
-        <mesh key={i} position={v.pos as [number, number, number]} geometry={geo} material={mat}>
-          {v.edge && <Edges scale={1.01} linewidth={1} color={EDGE} threshold={15} />}
+        <mesh key={i} position={v.pos as [number, number, number]} rotation={v.rot} geometry={geo} material={mat}>
+          {v.edge && <Edges scale={1.01} linewidth={1} color={Math.random() > 0.5 ? CYAN : EDGE} threshold={15} />}
         </mesh>
       ))}
     </group>
@@ -116,6 +140,7 @@ function MicroVoxels() {
 function CorePlatform() {
   const setActiveWindow = useMemoryStore(s => s.setActiveWindow)
   const [hovered, setHovered] = useState(false)
+  const textures = useMemo(() => getBlackMarbleTextures('core'), [])
 
   return (
     <group 
@@ -131,13 +156,20 @@ function CorePlatform() {
           roughness={0.9} 
           metalness={0.1} 
           emissive={PURPLE} 
-          emissiveIntensity={hovered ? 0.4 : 0}
+          emissiveIntensity={hovered ? 0.3 : 0.05}
+          map={textures.mapTex}
+          bumpMap={textures.bumpTex}
+          bumpScale={0.05}
+          emissiveMap={textures.emiTex}
         />
         <Edges scale={1.001} linewidth={2} color={hovered ? CYAN : EDGE} />
       </mesh>
       <mesh position={[0, 0.75, 0]} castShadow>
         <boxGeometry args={[0.6, 0.5, 0.6]} />
-        <meshStandardMaterial color={BODY} roughness={0.8} metalness={0.2} />
+        <meshStandardMaterial 
+          color={BODY} roughness={0.8} metalness={0.2} 
+          map={textures.mapTex} bumpMap={textures.bumpTex} bumpScale={0.05}
+        />
         <Edges scale={1.002} linewidth={2} color={EDGE} />
       </mesh>
       <pointLight color={PURPLE} intensity={hovered ? 6 : 3} distance={7} position={[0, 1.2, 0]} />
@@ -147,21 +179,35 @@ function CorePlatform() {
 
 function PersistenceVault() {
   const cubeGeo = useMemo(() => new THREE.BoxGeometry(0.96, 0.96, 0.96), [])
-  const setActiveWindow = useMemoryStore(s => s.setActiveWindow)
   const [hovered, setHovered] = useState(false)
+  const textures = useMemo(() => getBlackMarbleTextures('persistence'), [])
+
+  const content = `## Installation\n\n**Single Binary, Zero Dependencies**\n\nDownload and run Engram in seconds. Works on macOS, Linux, and Windows.\n\n### Quick Start\n\n\`\`\`bash\n# macOS\nbrew install engram\n\n# Linux\ncurl -sSL https://engram.dev/install.sh | bash\n\n# Windows\nwinget install engram\`\`\``
 
   const matsSolid = useMemo(() => {
-    const side = new THREE.MeshStandardMaterial({ color: BODY, roughness: 0.9, metalness: 0.1 })
-    const top = new THREE.MeshStandardMaterial({ color: PURPLE, emissive: PURPLE, emissiveIntensity: 0.6, roughness: 0.4 })
+    const side = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: PURPLE, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.3 : 0.05
+    })
+    const top = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: PURPLE, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.5 : 0.2
+    })
     return [side, side, top, side, side, side]
-  }, [])
+  }, [textures, hovered])
 
   return (
     <group 
       position={[4, 0, -4]}
       onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
       onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
-      onClick={(e) => { e.stopPropagation(); setActiveWindow('architecture') }}
+      onClick={(e) => { 
+        e.stopPropagation()
+        const openWindow = useMemoryStore.getState().openWindow
+        openWindow('INSTALL', 'Installation', content)
+      }}
     >
       {[[-0.5, 0.48, -0.5], [0.5, 0.48, -0.5], [-0.5, 0.48, 0.5], [0.5, 0.48, 0.5]].map((pos, i) => (
         <mesh key={i} position={pos as [number, number, number]} geometry={cubeGeo} material={matsSolid} castShadow receiveShadow>
@@ -176,27 +222,48 @@ function PersistenceVault() {
 
 function SearchTower() {
   const cubeGeo = useMemo(() => new THREE.BoxGeometry(0.96, 0.96, 0.96), [])
-  const setActiveWindow = useMemoryStore(s => s.setActiveWindow)
   const [hovered, setHovered] = useState(false)
+  const textures = useMemo(() => getBlackMarbleTextures('search'), [])
+
+  const content = `## Git Synchronization\n\n**Version-Controlled Memory Backups**\n\nAutomatically sync your memory vault to a Git repository for backup and audit trail.\n\n### Features\n\n- Automatic commits on save\n- Branch support for experiments\n- Push/pull to remote repos\n- Encrypted storage`
 
   const matsBase = useMemo(() => {
-    const side = new THREE.MeshStandardMaterial({ color: BODY, roughness: 0.9, metalness: 0.1 })
-    const top = new THREE.MeshStandardMaterial({ color: PURPLE, emissive: PURPLE, emissiveIntensity: 0.5, roughness: 0.5 })
+    const side = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: CYAN, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.3 : 0.05
+    })
+    const top = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: CYAN, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.4 : 0.1
+    })
     return [side, side, top, side, side, side]
-  }, [])
+  }, [textures, hovered])
 
   const matsTop = useMemo(() => {
-    const side = new THREE.MeshStandardMaterial({ color: BODY, roughness: 0.9, metalness: 0.1 })
-    const top = new THREE.MeshStandardMaterial({ color: CYAN, emissive: CYAN, emissiveIntensity: 3, roughness: 0.1 })
+    const side = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: CYAN, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.3 : 0.05
+    })
+    const top = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.1, metalness: 0.1,
+      emissive: CYAN, emissiveIntensity: hovered ? 5.0 : 3.0
+    })
     return [side, side, top, side, side, side]
-  }, [])
+  }, [textures, hovered])
 
   return (
     <group 
       position={[-4, 0, -4]}
       onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
       onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
-      onClick={(e) => { e.stopPropagation(); setActiveWindow('tools') }}
+      onClick={(e) => { 
+        e.stopPropagation()
+        const openWindow = useMemoryStore.getState().openWindow
+        openWindow('SYNC', 'Git Synchronization', content)
+      }}
     >
       {[0.48, 1.52, 2.56].map((y, i) => (
         <mesh key={i} position={[0, y, 0]} geometry={cubeGeo} material={i === 2 ? matsTop : matsBase} castShadow receiveShadow>
@@ -219,43 +286,72 @@ function TuiTerminal() {
       ctx.strokeStyle = '#00f2ff'; ctx.lineWidth = 2
       const lines = [{x:30,w:200},{x:30,w:120},{x:50,w:280},{x:30,w:160},{x:50,w:100},{x:30,w:240},{x:50,w:180},{x:30,w:90},{x:30,w:300},{x:50,w:140},{x:30,w:220}]
       lines.forEach((line, i) => { const y = 40 + i * 36; ctx.beginPath(); ctx.moveTo(line.x, y); ctx.lineTo(line.x + line.w, y); ctx.stroke() })
-      ctx.fillStyle = '#00f2ff'; ctx.fillRect(30, 40 + 12 * 36, 8, 16)
+      
+      // Cursor parpadeante (parpadeo no es trivial aquí porque se renderiza una vez, pero lo dibujamos)
+      ctx.fillStyle = '#00f2ff'; ctx.fillRect(30, 40 + 12 * 36, 16, 24)
     }
-    return new THREE.CanvasTexture(canvas)
+    const tex = new THREE.CanvasTexture(canvas)
+    tex.anisotropy = 4
+    return tex
   }, [])
 
-  const setActiveWindow = useMemoryStore(s => s.setActiveWindow)
+  const textures = useMemo(() => getBlackMarbleTextures('tui'), [])
+  const content = `## Text User Interface\n\n**Direct Terminal Control**\n\nAccess Engram through a powerful terminal interface for advanced memory operations.\n\n### Commands\n\n- \`list\` - Show all memories\n- \`search <query>\` - Full-text search\n- \`load <id>\` - Load specific memory\n- \`save\` - Manual save\n- \`sync\` - Git synchronization`
+
   const [hovered, setHovered] = useState(false)
+
+  const mats = useMemo(() => {
+    const side = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: textures.mapTex, bumpMap: textures.bumpTex, bumpScale: 0.05,
+      emissive: CYAN, emissiveMap: textures.emiTex, emissiveIntensity: hovered ? 0.3 : 0.05
+    })
+    const front = new THREE.MeshStandardMaterial({ 
+      color: BODY, roughness: 0.9, metalness: 0.1,
+      map: tuiTexture,
+      emissive: CYAN, emissiveMap: tuiTexture, emissiveIntensity: hovered ? 1.0 : 0.3
+    })
+    // Indices: right (0), left (1), top (2), bottom (3), front (+Z, 4), back (-Z, 5)
+    return [side, side, side, side, front, side]
+  }, [textures, tuiTexture, hovered])
 
   return (
     <group 
       position={[-6, 0, 6]}
       onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
       onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
-      onClick={(e) => { e.stopPropagation(); setActiveWindow('tui') }}
+      onClick={(e) => { 
+        e.stopPropagation()
+        const openWindow = useMemoryStore.getState().openWindow
+        openWindow('TUI', 'Text User Interface', content)
+      }}
     >
-      <mesh position={[0, 0.25, 0]} castShadow receiveShadow>
+      <mesh position={[0, 0.25, 0]} material={mats} castShadow receiveShadow>
         <boxGeometry args={[2.96, 0.5, 0.96]} />
-        <meshStandardMaterial color={BODY} roughness={0.9} metalness={0.1} emissive={CYAN} emissiveIntensity={hovered ? 1.0 : 0.2} map={tuiTexture} />
         <Edges scale={1.001} linewidth={2} color={hovered ? CYAN : EDGE} />
       </mesh>
       <TerminalLabel text="TUI" secondary="interactive · terminal" yOffset={1.2} />
-      <pointLight color={CYAN} intensity={hovered ? 3 : 1} distance={3} position={[0, 0.8, 0]} />
+      <pointLight color={CYAN} intensity={hovered ? 3 : 1} distance={3} position={[0, 0.8, 1]} />
     </group>
   )
 }
 
 function McpAntenna() {
   const orbRef = useRef<THREE.Mesh>(null)
-  const setActiveWindow = useMemoryStore(s => s.setActiveWindow)
   const [hovered, setHovered] = useState(false)
+  const textures = useMemo(() => getBlackMarbleTextures('mcp'), [])
+
+  const content = `## MCP Tools\n\n**Model Context Protocol Integration**\n\nSeamlessly connect Engram with any MCP-compatible tool or agent.\n\n### Supported Tools\n\n- File system operations\n- Code repository access\n- Database queries\n- API integrations\n- Custom tool handlers`
 
   useFrame(({ clock }) => {
     if (orbRef.current) {
       const mat = orbRef.current.material as THREE.MeshStandardMaterial
       const pulse = Math.sin(clock.elapsedTime * Math.PI * 2) * 0.5 + 0.5
-      mat.emissiveIntensity = (hovered ? 4 : 1) + pulse * 4
+      mat.emissiveIntensity = (hovered ? 7 : 3) + pulse * 2
       orbRef.current.scale.setScalar((hovered ? 1.2 : 1) + pulse * 0.15)
+      orbRef.current.rotation.y = clock.elapsedTime * 1.5 // 1.5 rad/s
+      orbRef.current.position.x = Math.sin(clock.elapsedTime * 1.5) * 0.25
+      orbRef.current.position.z = Math.cos(clock.elapsedTime * 1.5) * 0.25
     }
   })
 
@@ -264,17 +360,28 @@ function McpAntenna() {
       position={[6, 0, 8]}
       onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
       onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
-      onClick={(e) => { e.stopPropagation(); setActiveWindow('architecture') }}
+      onClick={(e) => { 
+        e.stopPropagation()
+        const openWindow = useMemoryStore.getState().openWindow
+        openWindow('TOOLS', 'MCP Tools', content)
+      }}
     >
-      <mesh position={[0, 1.5, 0]}>
+      <mesh position={[0, 1.5, 0]} castShadow>
         <boxGeometry args={[0.12, 3, 0.12]} />
-        <meshStandardMaterial color={BODY} />
+        <meshStandardMaterial 
+          color={BODY} roughness={0.8} metalness={0.2}
+          map={textures.mapTex} bumpMap={textures.bumpTex} bumpScale={0.05}
+          emissive={CYAN} emissiveMap={textures.emiTex} emissiveIntensity={hovered ? 0.3 : 0.05}
+        />
         <Edges scale={1.01} color={hovered ? CYAN : EDGE} />
       </mesh>
-      <mesh ref={orbRef} position={[0, 3.2, 0]}>
-        <sphereGeometry args={[0.18, 16, 16]} />
-        <meshStandardMaterial color={CYAN} emissive={CYAN} emissiveIntensity={3} />
-      </mesh>
+      <group position={[0, 3.2, 0]}>
+        <mesh ref={orbRef}>
+          <sphereGeometry args={[0.18, 16, 16]} />
+          <meshStandardMaterial color={CYAN} emissive={CYAN} emissiveIntensity={3} roughness={0.1} />
+        </mesh>
+        <pointLight color={CYAN} intensity={hovered ? 6 : 3} distance={5} />
+      </group>
       <TerminalLabel text="MCP" secondary="agent · stream" yOffset={4.2} />
     </group>
   )

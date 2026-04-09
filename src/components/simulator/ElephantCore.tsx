@@ -20,13 +20,19 @@ export function ElephantCore() {
     }
   })
 
+  const content = `## Architecture\n\n**Persistent Memory for AI Coding Agents**\n\nEngram provides persistent memory that bridges agent sessions, maintaining context, decisions, and learned patterns over time.\n\n### Core Features\n\n- **Persistent Storage**: SQLite-based memory vault\n- **Fast Search**: FTS5 full-text search indexing\n- **Agent-Agnostic**: Works with any AI agent\n- **MCP Integration**: Seamless tool compatibility\n- **Git Sync**: Version-controlled memory backups\n\n### How It Works\n\n1. Agent operates as usual\n2. Memory captured to Engram vault\n3. FTS5 indexes content for search\n4. Memory persists across sessions\n5. Next agent load retains context`
+
   return (
     <group 
       ref={groupRef} 
       position={[0, 1.8, 0]}
       onPointerOver={() => { setHovered(true); document.body.style.cursor = 'pointer' }}
       onPointerOut={() => { setHovered(false); document.body.style.cursor = 'default' }}
-      onClick={(e) => { e.stopPropagation(); setActiveWindow('kernel') }}
+      onClick={(e) => { 
+        e.stopPropagation()
+        const openWindow = useMemoryStore.getState().openWindow
+        openWindow('ARCH', 'Architecture', content)
+      }}
     >
 
       {/* ─── TORSO ─── */}

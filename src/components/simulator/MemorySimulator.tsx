@@ -24,6 +24,7 @@ function IsometricCamera() {
 export function MemorySimulator() {
   return (
     <Canvas
+      shadows={{ type: THREE.PCFSoftShadowMap }}
       orthographic
       camera={{
         position: [40, 35, 40],
@@ -41,10 +42,22 @@ export function MemorySimulator() {
       <IsometricCamera />
       
       {/* DirectionalLight provides crisp hard shadows over the extruded tiles */}
-      <directionalLight position={[20, 30, 10]} intensity={2.5} castShadow />
+      <directionalLight 
+        position={[-10, 15, -10]} 
+        intensity={0.3} 
+        color="#e8e8e8"
+        castShadow 
+        shadow-bias={-0.001}
+        shadow-camera-near={0.1}
+        shadow-camera-far={50}
+        shadow-camera-left={-20}
+        shadow-camera-top={20}
+        shadow-camera-right={20}
+        shadow-camera-bottom={-20}
+      />
       
-      {/* Increased ambient light to 1.0 to ensure #050505 dark gray doesn't get clamped to pure zero by the monitor */}
-      <ambientLight intensity={1.5} />
+      {/* Ambient shadow/mood */}
+      <ambientLight color="#020202" intensity={0.05} />
 
 
       <TilesetGrid />

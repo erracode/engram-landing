@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Minus, Square, ExternalLink } from 'lucide-react'
-import { useMemoryStore } from '../stores/memoryStore'
+import { useMemoryStore } from '../../stores/memoryStore'
 
 interface MultipleWindow {
   id: string
@@ -75,6 +75,7 @@ function MDXWindow({
   
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return
+    e.preventDefault()
     setIsDragging(true)
     const rect = windowRef.current?.getBoundingClientRect()
     if (rect) {
@@ -128,7 +129,7 @@ function MDXWindow({
       }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="fixed bg-[#0a0a0a] border border-[#2596be] rounded-lg shadow-2xl overflow-hidden pointer-events-auto z-50"
+      className="fixed bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50"
       style={{
         left: isMaximized ? 0 : position.x,
         top: isMaximized ? 0 : position.y,
@@ -138,11 +139,13 @@ function MDXWindow({
     >
       {/* Title bar */}
       <div
-        className={`h-10 bg-[#111111] border-b border-[#222222] flex items-center justify-between px-4 cursor-${isMaximized ? 'default' : 'move'} select-none`}
+        className={`h-10 bg-[#111111] border-b border-[#222222] flex items-center justify-between px-4 select-none ${
+          isMaximized ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'
+        }`}
         onMouseDown={handleMouseDown}
       >
         <div className="flex items-center gap-2">
-          <span className="text-[#2596be] font-mono text-sm font-bold">{title}</span>
+          <span className="text-[#e8e8e8] font-mono text-sm font-bold">{title}</span>
         </div>
         
         <div className="flex items-center gap-2">
@@ -168,9 +171,9 @@ function MDXWindow({
       </div>
       
       {/* Content area */}
-      <div className="h-[calc(100%-40px)] overflow-auto p-6 custom-scrollbar">
+      <div className="h-[calc(100%-40px)] overflow-auto p-6 custom-scrollbar mdx-content">
         <div
-          className="prose prose-invert prose-code:font-mono prose-code:bg-[#111111] prose-code:p-1 prose-code:rounded prose-code:border prose-code:border-[#222222] max-w-none"
+          className="max-w-none"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
