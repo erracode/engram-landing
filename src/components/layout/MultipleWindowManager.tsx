@@ -55,6 +55,10 @@ interface MDXWindowProps {
   onMaximize: () => void
 }
 
+import { WelcomeWindowContent } from '../windows/WelcomeWindowContent'
+import { AgentsWindowContent } from '../windows/AgentsWindowContent'
+import { SocialProofContent } from '../windows/SocialProofContent'
+
 function MDXWindow({
   id,
   title,
@@ -128,11 +132,11 @@ function MDXWindow({
       }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="absolute bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50"
+      className="absolute bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50 flex flex-col shadow-2xl"
     >
       {/* Title bar */}
       <div
-        className={`h-10 bg-[#111111] border-b border-[#222222] flex items-center justify-between px-4 select-none ${
+        className={`h-10 bg-[#111111] border-b border-[#222222] flex items-center justify-between px-4 select-none shrink-0 ${
           isMaximized ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'
         }`}
         onMouseDown={handleMouseDown}
@@ -164,11 +168,19 @@ function MDXWindow({
       </div>
       
       {/* Content area */}
-      <div className="h-[calc(100%-40px)] overflow-auto p-6 custom-scrollbar mdx-content">
-        <div
-          className="max-w-none"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+      <div className="flex-1 overflow-auto p-6 custom-scrollbar mdx-content bg-[#000000]">
+        {id === 'welcome' ? (
+          <WelcomeWindowContent />
+        ) : id === 'agentsCompatibility' ? (
+          <AgentsWindowContent />
+        ) : id === 'socialProof' ? (
+          <SocialProofContent />
+        ) : (
+          <div
+            className="max-w-none"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )}
       </div>
     </motion.div>
   )

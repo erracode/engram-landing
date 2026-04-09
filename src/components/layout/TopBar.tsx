@@ -1,6 +1,15 @@
 import { useMemoryStore } from '../../stores/memoryStore'
 import { MDX_CONTENT_MAP } from '../../utils/mdxContentMap'
 
+function GithubIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  )
+}
+
 const NAV_ITEMS = [
   { id: 'kernel', label: 'KERNEL', title: 'KERNEL', content: MDX_CONTENT_MAP.kernel },
   { id: 'installation', label: 'INSTALL', title: 'INSTALLATION', content: MDX_CONTENT_MAP.installation },
@@ -13,11 +22,10 @@ const NAV_ITEMS = [
   { id: 'doc-external', label: 'GET STARTED', title: 'GET STARTED', href: '/getting-started', external: true },
 ]
 
-function GithubIcon() {
+function ElephantIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7 2h10v2h2v4h-2v2h-2v2H9v-2H7V8H5V4h2V2zm0 2H5v4h2V4zm10 0v4h2V4h-2zM9 8h6v2h2v2H7v-2h2V8zm-2 4v2H5v-2h2zm10 0v2h-2v-2h2zm-8 4v-2h6v2H9zm0 0v2h-2v-2h2zm6 0v2h-2v-2h2zm-4 4v-2h2v2h-2zm0 0h2v2h-2v-2z" />
     </svg>
   )
 }
@@ -55,7 +63,10 @@ export function TopBar() {
       }}
     >
       {/* Left: Brand */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ color: '#bc13fe' }}>
+          <ElephantIcon />
+        </div>
         <span
           style={{
             fontFamily: "'Doto', 'Space Mono', monospace",
@@ -67,10 +78,23 @@ export function TopBar() {
         >
           ENGRAM
         </span>
+        <span
+          style={{
+            fontSize: '10px',
+            color: '#666666',
+            marginLeft: '12px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.02em',
+            display: 'none',
+          }}
+          className="sm:inline-block"
+        >
+          An elephant never forgets. █
+        </span>
       </div>
 
       {/* Center: Navigation */}
-      <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+      <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden md:flex">
         {NAV_ITEMS.map((item) => {
           // Handle external links differently
           if (item.external && item.href) {

@@ -118,6 +118,21 @@ const DEFAULT_WINDOW_CONFIG: Record<string, { title: string; position: WindowPos
     position: { x: 240, y: 220 },
     size: { width: 880, height: 680 }
   },
+  welcome: {
+    title: 'THE BRAIN',
+    position: { x: Math.max(20, window.innerWidth / 2 - 400), y: 100 },
+    size: { width: 700, height: 420 },
+  },
+  agentsCompatibility: {
+    title: 'AGENTS COMPATIBILITY',
+    position: { x: Math.max(20, window.innerWidth / 2 + 100), y: 300 },
+    size: { width: 600, height: 480 },
+  },
+  socialProof: {
+    title: 'COMMUNITY & STATS',
+    position: { x: 40, y: window.innerHeight - 300 },
+    size: { width: 400, height: 260 },
+  }
 }
 
 export const useMemoryStore = create<MemoryStore>()((set, get) => ({
@@ -301,4 +316,9 @@ export function startSimulation() {
 
   store.addLog(SAMPLE_LOGS[0])
   store.incrementMemories()
+
+  // Open default windows
+  store.openWindow('welcome', DEFAULT_WINDOW_CONFIG.welcome.title, '')
+  store.openWindow('agentsCompatibility', DEFAULT_WINDOW_CONFIG.agentsCompatibility.title, '')
+  store.openWindow('socialProof', DEFAULT_WINDOW_CONFIG.socialProof.title, '')
 }
