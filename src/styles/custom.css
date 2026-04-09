@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Nothing Design - Custom Properties */
+:root {
+  --black: #000000;
+  --surface: #111111;
+  --surface-raised: #1A1A1A;
+  --border: #222222;
+  --border-visible: #333333;
+  --text-disabled: #666666;
+  --text-secondary: #999999;
+  --text-primary: #E8E8E8;
+  --text-display: #FFFFFF;
+  --cyan-neon: #00f2ff;
+  --purple-neon: #bc13fe;
+  --success: #4A9E5C;
+  --warning: #D4A843;
+  --error: #D71921;
+}
+
+/* Apply base styles */
+html {
+  background-color: var(--black);
+  color: var(--text-primary);
+  font-family: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Doto', 'Space Mono', monospace;
+  color: var(--text-display);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 72px; }
+h2 { font-size: 48px; }
+h3 { font-size: 36px; }
+h4 { font-size: 24px; }
+h5 { font-size: 18px; }
+h6 { font-size: 16px; }
+
+/* Body text */
+p, li, td, th, blockquote, pre {
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* Labels and captions */
+.label, .caption {
+  font-family: 'Space Mono', 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.caption {
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+}
+
+/* Links */
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms, color 150ms;
+}
+
+a:hover {
+  color: var(--text-display);
+  border-bottom-color: var(--border-visible);
+}
+
+/* Buttons */
+.button {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  min-height: 44px;
+  border: none;
+  cursor: pointer;
+}
+
+.button-primary {
+  background-color: var(--text-display);
+  color: var(--black);
+}
+
+.button-secondary {
+  background-color: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.button-ghost {
+  background-color: transparent;
+  border: none;
+  color: var(--text-secondary);
+}
+
+.button-destructive {
+  background-color: transparent;
+  border: 1px solid var(--error);
+  color: var(--error);
+}
+
+/* Active states */
+.button-primary:hover,
+.button-secondary:hover,
+.button-destructive:hover {
+  opacity: 0.9;
+}
+
+/* Code blocks */
+pre, code {
+  font-family: 'Space Mono', 'JetBrains Mono', 'SF Mono', monospace;
+  background-color: var(--surface);
+  color: var(--text-display);
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+}
+
+pre {
+  padding: 1em;
+  overflow-x: auto;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+th {
+  background-color: var(--surface-raised);
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: var(--surface);
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 3px solid var(--border-visible);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Horizontal rules */
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--border);
+  margin: 2em 0;
+}
+
+/* Alert/Status boxes */
+.status {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.status-success {
+  background-color: var(--success);
+  color: var(--text-display);
+}
+
+.status-warning {
+  background-color: var(--warning);
+  color: var(--text-display);
+}
+
+.status-error {
+  background-color: var(--error);
+  color: var(--text-display);
+}
+
+/* Dot grids (for backgrounds) */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--border-visible) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dot-grid-subtle {
+  background-image: radial-gradient(circle, rgba(51, 51, 51, 0.3) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+}
+
+/* Code syntax highlighting (using prism themes as base) */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--text-secondary);
+}
+
+.token.punctuation {
+  color: var(--text-display);
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--cyan-neon);
+}
+
+.token.boolean,
+.token.number {
+  color: var(--cyan-neon);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--purple-neon);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.token.language-string {
+  color: var(--text-display);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--cyan-neon);
+}
+
+.token.regex,
+.token.important {
+  color: var(--purple-neon);
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.class-name {
+  /* Keep as default for now */
+}
+
+/* Override Tailwind's default transitions for Nothing Design */
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-duration: 150ms;
+}
+
+.transition {
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-duration: 150ms;
+}

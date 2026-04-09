@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { id: 'tui', label: 'TUI', title: 'TERMINAL UI', content: MDX_CONTENT_MAP.tui },
   { id: 'gitSync', label: 'SYNC', title: 'GIT SYNC', content: MDX_CONTENT_MAP.gitSync },
   { id: 'docs', label: 'DOCS', title: 'DOCUMENTATION', content: MDX_CONTENT_MAP.docs },
+  { id: 'doc-external', label: 'DOCS', title: 'DOCUMENTATION', href: '/docs', external: true },
 ]
 
 function GithubIcon() {
@@ -71,6 +72,36 @@ export function TopBar() {
       {/* Center: Navigation */}
       <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         {NAV_ITEMS.map((item) => {
+          // Handle external links differently
+          if (item.external && item.href) {
+            return (
+              <a
+                key={item.id}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '8px 14px',
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '12px',
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: '#999999',
+                  borderBottom: '2px solid transparent',
+                  transition: 'color 150ms, border-color 150ms',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#e8e8e8' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#999999' }}
+              >
+                {item.label}
+              </a>
+            )
+          }
+          
+          // Regular window toggle
           const isOpen = activeWindows[item.id] && activeWindows[item.id].isOpen
           return (
             <button
