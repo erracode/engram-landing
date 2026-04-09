@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   { id: 'tui', label: 'TUI', title: 'TERMINAL UI', content: MDX_CONTENT_MAP.tui },
   { id: 'gitSync', label: 'SYNC', title: 'GIT SYNC', content: MDX_CONTENT_MAP.gitSync },
   { id: 'docs', label: 'DOCS', title: 'DOCUMENTATION', content: MDX_CONTENT_MAP.docs },
-  { id: 'doc-external', label: 'DOCS', title: 'DOCUMENTATION', href: '/docs', external: true },
+  { id: 'doc-external', label: 'GET STARTED', title: 'GET STARTED', href: '/getting-started', external: true },
 ]
 
 function GithubIcon() {

@@ -1,0 +1,259 @@
+---
+const { children } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{Astro.title}</title>
+    <meta name="description" content="{Astro.description}" />
+    <style is:global>
+      :root {
+        --black: #000000;
+        --surface: #111111;
+        --surface-raised: #1A1A1A;
+        --border: #222222;
+        --border-visible: #333333;
+        --text-disabled: #666666;
+        --text-secondary: #999999;
+        --text-primary: #E8E8E8;
+        --text-display: #FFFFFF;
+        --cyan-neon: #00f2ff;
+        --purple-neon: #bc13fe;
+        --success: #4A9E5C;
+        --warning: #D4A843;
+        --error: #D71921;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        background-color: var(--black);
+        color: var(--text-primary);
+        font-family: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+        line-height: 1.5;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Doto', 'Space Mono', monospace;
+        color: var(--text-display);
+        font-weight: 600;
+        line-height: 1.2;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+      }
+      
+      h1 { font-size: 2.5rem; letter-spacing: -0.03em; }
+      h2 { font-size: 2rem; letter-spacing: -0.02em; }
+      h3 { font-size: 1.75rem; letter-spacing: -0.02em; }
+      h4 { font-size: 1.5rem; letter-spacing: -0.01em; }
+      h5 { font-size: 1.25rem; }
+      h6 { font-size: 1.125rem; }
+      
+      p, li, td, th {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      
+      .label {
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-secondary);
+      }
+      
+      a {
+        color: var(--cyan-neon);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 150ms;
+      }
+      
+      a:hover {
+        border-bottom-color: var(--border-visible);
+      }
+      
+      code {
+        font-family: 'Space Mono', monospace;
+        background-color: var(--surface);
+        color: var(--text-display);
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      
+      pre {
+        background-color: var(--surface);
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+      }
+      
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 1em;
+      }
+      
+      blockquote {
+        border-left: 3px solid var(--cyan-neon);
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        font-style: italic;
+        color: var(--text-secondary);
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+      }
+      
+      th, td {
+        border: 1px solid var(--border);
+        padding: 0.75rem;
+        text-align: left;
+      }
+      
+      th {
+        background-color: var(--surface-raised);
+        font-weight: 600;
+      }
+      
+      tr:nth-child(even) {
+        background-color: var(--surface);
+        background-color: var(--surface);
+      }
+      
+      .status {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-radius: 3px;
+      }
+      
+      .status-success {
+        background-color: var(--success);
+        color: var(--text-display);
+      }
+      
+      .status-warning {
+        background-color: var(--warning);
+        color: var(--text-display);
+      }
+      
+      .status-error {
+        background-color: var(--error);
+        color: var(--text-display);
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 9999px;
+        cursor: pointer;
+        transition: all 150ms ease;
+        border: none;
+      }
+      
+      .btn-primary {
+        background-color: var(--text-display);
+        color: var(--black);
+      }
+      
+      .btn-primary:hover {
+        background-color: var(--text-primary);
+      }
+      
+      .btn-secondary {
+        background-color: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-primary);
+      }
+      
+      .btn-secondary:hover {
+        background-color: var(--surface);
+      }
+      
+      .btn-ghost {
+        background-color: transparent;
+        color: var(--text-secondary);
+      }
+      
+      .btn-ghost:hover {
+        color: var(--text-primary);
+        text-decoration: underline;
+      }
+      
+      .btn-destructive {
+        background-color: transparent;
+        border: 1px solid var(--error);
+        color: var(--error);
+      }
+      
+      .btn-destructive:hover {
+        background-color: var(--error);
+        color: var(--text-display);
+      }
+      
+      .space-tight { margin: 0.5rem 0; }
+      .space-medium { margin: 1rem 0; }
+      .space-wide { margin: 2rem 0; }
+      .space-vast { margin: 4rem 0; }
+      
+      .dot-grid {
+        background-image: radial-gradient(circle, var(--border-visible) 1px, transparent 1px);
+        background-size: 1rem 1rem;
+      }
+      
+      .dot-grid-subtle {
+        background-image: radial-gradient(circle, rgba(51, 51, 51, 0.3) 0.5px, transparent 0.5px);
+        background-size: 0.75rem 0.75rem;
+      }
+      
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+      
+      hr {
+        border: 0;
+        height: 1px;
+        background-color: var(--border);
+        margin: 2rem 0;
+      }
+      
+      ul, ol {
+        padding-left: 2rem;
+        margin: 1rem 0;
+      }
+      
+      li {
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="max-w-4xl mx-auto px-6 py-8">
+      <div class="prose prose-sm:max-w-none">
+        {children}
+      </div>
+    </div>
+  </body>
+</html>

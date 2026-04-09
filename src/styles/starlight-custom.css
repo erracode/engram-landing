@@ -1,0 +1,289 @@
+/* Nothing Design - Starlight Custom Styles */
+
+/* Import base design tokens */
+@import url('https://fonts.googleapis.com/css2?family=Doto:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* CSS Custom Properties - Nothing Design */
+:root {
+  --black: #000000;
+  --surface: #111111;
+  --surface-raised: #1A1A1A;
+  --border: #222222;
+  --border-visible: #333333;
+  --text-disabled: #666666;
+  --text-secondary: #999999;
+  --text-primary: #E8E8E8;
+  --text-display: #FFFFFF;
+  --cyan-neon: #00f2ff;
+  --purple-neon: #bc13fe;
+  --success: #4A9E5C;
+  --warning: #D4A843;
+  --error: #D71921;
+}
+
+/* Override Starlight default theme to dark */
+:root {
+  --sl-color-accent-high: var(--cyan-neon);
+  --sl-color-accent-low: #003d42;
+  --sl-color-accent: var(--cyan-neon);
+  --sl-color-black: var(--black);
+  --sl-color-gray-1: var(--text-primary);
+  --sl-color-gray-2: var(--text-secondary);
+  --sl-color-gray-3: var(--text-disabled);
+  --sl-color-gray-4: var(--border-visible);
+  --sl-color-gray-5: var(--border);
+  --sl-color-gray-6: var(--surface);
+  --sl-color-white: var(--text-display);
+  --sl-font-system: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --sl-font-mono: 'Space Mono', 'JetBrains Mono', 'SF Mono', monospace;
+}
+
+/* Background - OLED Black */
+body {
+  background-color: var(--black) !important;
+  color: var(--text-primary);
+  font-family: var(--sl-font-system);
+}
+
+/* Override header/starlight components */
+.site-title, .starlight-aside__heading {
+  font-family: 'Doto', 'Space Mono', monospace !important;
+  letter-spacing: -0.02em;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6,
+.starlight-aside__heading,
+.site-title {
+  font-family: 'Doto', 'Space Mono', monospace !important;
+  color: var(--text-display) !important;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Page content typography */
+.mdx-content {
+  font-family: var(--sl-font-system);
+  color: var(--text-primary);
+}
+
+/* Links */
+a {
+  color: var(--cyan-neon) !important;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms ease;
+}
+
+a:hover {
+  border-bottom-color: var(--border-visible);
+}
+
+/* Code blocks */
+pre, code {
+  font-family: var(--sl-font-mono) !important;
+  background-color: var(--surface) !important;
+  color: var(--text-display) !important;
+  border: 1px solid var(--border);
+}
+
+pre {
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* Buttons */
+.starlight-aside__content a,
+.button {
+  font-family: var(--sl-font-mono) !important;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Navigation / Sidebar */
+nav[class*="sidebar"],
+.starlight-nav-bar {
+  background-color: var(--surface) !important;
+  border-right: 1px solid var(--border);
+}
+
+nav[class*="sidebar"] a,
+.starlight-nav-bar a {
+  font-family: var(--sl-font-mono) !important;
+  font-size: 13px;
+  color: var(--text-secondary) !important;
+  padding: 0.5rem 1rem;
+  border-bottom: none !important;
+}
+
+nav[class*="sidebar"] a:hover,
+nav[class*="sidebar"] a[aria-current="page"],
+.starlight-nav-bar a:hover,
+.starlight-nav-bar a[aria-current="page"] {
+  color: var(--text-display) !important;
+  background-color: var(--surface-raised);
+}
+
+/* Active navigation item */
+nav[class*="sidebar"] a[aria-current="page"] {
+  border-left: 2px solid var(--cyan-neon);
+}
+
+/* Search */
+.starlight-aside__content .search-input,
+.search {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--sl-font-mono) !important;
+}
+
+.search-input::placeholder {
+  color: var(--text-disabled) !important;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  border: 1px solid var(--border) !important;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: var(--surface-raised) !important;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: var(--surface);
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 3px solid var(--cyan-neon) !important;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Card/Aside components */
+.starlight-aside {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px;
+}
+
+/* Dot grid pattern for hero/header areas */
+.hero {
+  background-image: radial-gradient(circle, var(--border-visible) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Labels */
+.label, .caption {
+  font-family: var(--sl-font-mono) !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+/* Status indicators */
+.status {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-family: var(--sl-font-mono) !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 3px;
+}
+
+.status-success {
+  background-color: var(--success) !important;
+  color: var(--text-display) !important;
+}
+
+.status-warning {
+  background-color: var(--warning) !important;
+  color: var(--text-display) !important;
+}
+
+.status-error {
+  background-color: var(--error) !important;
+  color: var(--text-display) !important;
+}
+
+/* Horizontal rules */
+hr {
+  border: 0;
+  height: 1px;
+  background-color: var(--border);
+  margin: 2rem 0;
+}
+
+/* List styling */
+ul, ol {
+  padding-left: 2rem;
+  margin: 1rem 0;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-visible);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-disabled);
+}
+
+/* Remove default shadows - Nothing Design */
+* {
+  box-shadow: none !important;
+}
+
+/* Banner/hero image area */
+.hero-image {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem;
+  font-family: var(--sl-font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
