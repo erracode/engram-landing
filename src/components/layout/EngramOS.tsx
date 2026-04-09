@@ -21,7 +21,7 @@ export function EngramOS() {
       }}
     >
       {/* 3D Diorama — persistent background */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
         <Suspense
           fallback={
             <div
@@ -47,8 +47,10 @@ export function EngramOS() {
       </div>
 
       {/* OS Shell — TopBar + Windows */}
-      <TopBar />
-      <WindowManager />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 10 }}>
+        <TopBar />
+        <WindowManager />
+      </div>
     </div>
   )
 }

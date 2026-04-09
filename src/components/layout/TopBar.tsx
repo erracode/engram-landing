@@ -38,12 +38,9 @@ export function TopBar() {
   return (
     <header
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
+        width: '100%',
         height: '48px',
+        zIndex: 100,
         background: 'rgba(0, 0, 0, 0.95)',
         borderBottom: '1px solid #333333',
         display: 'flex',

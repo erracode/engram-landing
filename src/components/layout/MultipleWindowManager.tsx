@@ -18,7 +18,7 @@ export function MultipleWindowManager() {
   const { activeWindows, setActiveWindow, closeWindow, toggleMinimize, toggleMaximize } = useMemoryStore()
   
   return (
-    <div className="fixed inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none">
       <AnimatePresence>
         {Object.entries(activeWindows).map(([id, window]) => {
           if (window.isMinimized) return null
@@ -77,19 +77,18 @@ function MDXWindow({
     if (isMaximized) return
     e.preventDefault()
     setIsDragging(true)
-    const rect = windowRef.current?.getBoundingClientRect()
-    if (rect) {
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      })
-    }
+    // Store the initial mouse position and current window position
+    setDragOffset({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    })
   }
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return
       
+      // Calculate new position relative to where drag started
       let newX = e.clientX - dragOffset.x
       let newY = e.clientY - dragOffset.y
       
@@ -123,19 +122,13 @@ function MDXWindow({
         opacity: 1, 
         scale: 1,
         x: isMaximized ? 0 : position.x,
-        y: isMaximized ? 0 : position.y,
-        width: isMaximized ? '100%' : size.width,
-        height: isMaximized ? '100%' : size.height,
+        y: isMaximized ? 48 : position.y,
+        width: isMaximized ? '100vw' : size.width,
+        height: isMaximized ? 'calc(100vh - 48px)' : size.height,
       }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="fixed bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50"
-      style={{
-        left: isMaximized ? 0 : position.x,
-        top: isMaximized ? 0 : position.y,
-        width: isMaximized ? '100%' : size.width,
-        height: isMaximized ? '100%' : size.height,
-      }}
+      className="absolute bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50"
     >
       {/* Title bar */}
       <div

@@ -1,4 +1,5 @@
-import { useRef, useCallback, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
+import { motion, useDragControls, type PanInfo } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 interface WindowProps {
@@ -20,52 +21,22 @@ export function Window({
   width = 560,
   maxHeight = 520,
 }: WindowProps) {
-  const [position, setPosition] = useState(defaultPosition)
   const [visible, setVisible] = useState(false)
-  const dragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number } | null>(null)
+  const controls = useDragControls()
 
-  // Fade in on mount
   useEffect(() => {
     requestAnimationFrame(() => setVisible(true))
   }, [])
 
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault()
-      dragRef.current = {
-        startX: e.clientX,
-        startY: e.clientY,
-        startPosX: position.x,
-        startPosY: position.y,
-      }
-
-      const onMouseMove = (ev: MouseEvent) => {
-        if (!dragRef.current) return
-        setPosition({
-          x: dragRef.current.startPosX + (ev.clientX - dragRef.current.startX),
-          y: dragRef.current.startPosY + (ev.clientY - dragRef.current.startY),
-        })
-      }
-
-      const onMouseUp = () => {
-        dragRef.current = null
-        document.removeEventListener('mousemove', onMouseMove)
-        document.removeEventListener('mouseup', onMouseUp)
-      }
-
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener('mouseup', onMouseUp)
-    },
-    [position]
-  )
+  const handleDrag = useCallback((_event: unknown, _info: PanInfo) => {
+    // framer-motion handles position automatically via x/y animate
+  }, [])
 
   return (
-    <div
+    <motion.div
       id={`window-${id}`}
       style={{
-        position: 'fixed',
-        left: position.x,
-        top: position.y,
+        position: 'absolute',
         width,
         maxHeight,
         zIndex: 80,
@@ -76,13 +47,29 @@ export function Window({
         borderRadius: '8px',
         fontFamily: "'Space Mono', 'JetBrains Mono', monospace",
         overflow: 'hidden',
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 200ms cubic-bezier(0.25, 0.1, 0.25, 1)',
       }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{
+        opacity: visible ? 1 : 0,
+        scale: visible ? 1 : 0.95,
+        x: defaultPosition.x,
+        y: defaultPosition.y,
+      }}
+      transition={{
+        opacity: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+        scale: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+        x: { duration: 0 },
+        y: { duration: 0 },
+      }}
+      drag
+      dragControls={controls}
+      dragListener={false}
+      dragMomentum={false}
+      onDrag={handleDrag}
     >
       {/* Title bar — draggable */}
       <div
-        onMouseDown={onMouseDown}
+        onPointerDown={(e) => controls.start(e)}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -91,6 +78,7 @@ export function Window({
           borderBottom: '1px solid #222222',
           cursor: 'grab',
           flexShrink: 0,
+          userSelect: 'none',
         }}
       >
         <span
@@ -137,6 +125,6 @@ export function Window({
       >
         {children}
       </div>
-    </div>
+    </motion.div>
   )
 }
