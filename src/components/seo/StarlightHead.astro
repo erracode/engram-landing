@@ -1,0 +1,162 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE, METADATA } from '../../config/seo';
+
+export async function head() {
+  return [
+    // Meta tags
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'description',
+        content: SITE.description,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'keywords',
+        content: METADATA.keywords.join(', '),
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'author',
+        content: METADATA.author,
+      },
+    },
+    
+    // Open Graph
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:title',
+        content: SITE.ogTitle,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:description',
+        content: SITE.ogDescription,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:type',
+        content: SITE.ogType,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:url',
+        content: SITE.siteUrl,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:image',
+        content: `${SITE.siteUrl}${SITE.ogImage}`,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:site_name',
+        content: SITE.ogSiteName,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        property: 'og:locale',
+        content: SITE.lang,
+      },
+    },
+    
+    // Twitter
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'twitter:card',
+        content: SITE.twitterCard,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'twitter:site',
+        content: SITE.twitterHandle,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'twitter:title',
+        content: SITE.twitterTitle,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'twitter:description',
+        content: SITE.twitterDescription,
+      },
+    },
+    {
+      tag: 'meta',
+      attrs: {
+        name: 'twitter:image',
+        content: `${SITE.siteUrl}${SITE.ogImage}`,
+      },
+    },
+    
+    // Favicon
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: SITE.favicon,
+      },
+    },
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: SITE.favicon,
+      },
+    },
+    
+    // Fonts
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+      },
+    },
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossorigin: 'true',
+      },
+    },
+    {
+      tag: 'link',
+      attrs: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap',
+      },
+    },
+  ];
+}
+
+---

@@ -1,28 +1,44 @@
 ---
 import '../styles/global.css'
+import { SITE, METADATA } from '../config/seo'
 
 interface Props {
   title: string
   description?: string
 }
 
-const { title, description = 'Persistent memory for AI coding agents. Agent-agnostic. Single binary. Zero dependencies.' } = Astro.props
+const { title, description = SITE.description } = Astro.props
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={SITE.lang} data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content={SITE.themeColor} />
+    <meta name="keywords" content={METADATA.keywords.join(', ')} />
+    <meta name="author" content={METADATA.author} />
+    <meta name="robots" content={METADATA.robots} />
 
     <title>{title}</title>
 
-    <!-- Open Graph -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content={SITE.ogTitle} />
+    <meta property="og:description" content={SITE.ogDescription} />
+    <meta property="og:type" content={SITE.ogType} />
+    <meta property="og:url" content={SITE.siteUrl} />
+    <meta property="og:image" content={`${SITE.siteUrl}${SITE.ogImage}`} />
+    <meta property="og:site_name" content={SITE.ogSiteName} />
+    <meta property="og:locale" content={SITE.lang} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content={SITE.twitterCard} />
+    <meta name="twitter:site" content={SITE.twitterHandle} />
+    <meta name="twitter:creator" content={SITE.twitterHandle} />
+    <meta name="twitter:title" content={SITE.twitterTitle} />
+    <meta name="twitter:description" content={SITE.twitterDescription} />
+    <meta name="twitter:image" content={`${SITE.siteUrl}${SITE.ogImage}`} />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,7 +46,22 @@ const { title, description = 'Persistent memory for AI coding agents. Agent-agno
     <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28' fill='%2300f2ff'>E</text></svg>" />
+    <link rel="icon" type="image/svg+xml" href={SITE.favicon} />
+    <link rel="apple-touch-icon" sizes="180x180" href={SITE.favicon} />
+    <link rel="mask-icon" href={SITE.favicon} color="#000000" />
+
+    <!-- JSON-LD Structured Data -->
+    {SITE.jsonLd && (
+      <script type="application/ld+json">
+        {JSON.stringify(SITE.jsonLd)}
+      </script>
+    )}
+    
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={SITE.siteUrl} />
   </head>
   <body class="bg-black text-text-primary dot-grid-subtle">
     <slot />

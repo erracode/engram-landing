@@ -30,6 +30,8 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@astrojs/starlight": "^0.38.3"
+    "@astrojs/cloudflare": "^13.1.8",
+    "@astrojs/starlight": "^0.38.3",
+    "wrangler": "^4.81.1"
   }
 }

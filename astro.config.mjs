@@ -3,9 +3,11 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
+import { head } from './src/config/starlight-head';
 
 export default defineConfig({
-  site: 'https://engram-landing.vercel.app',
+  site: 'https://engram-landing.pages.dev',
+  output: 'static',
   integrations: [
     react(),
     starlight({
@@ -23,30 +25,7 @@ export default defineConfig({
         },
       ],
       customCss: ['./src/styles/starlight-custom.css'],
-      head: [
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'preconnect',
-            href: 'https://fonts.googleapis.com',
-          },
-        },
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'preconnect',
-            href: 'https://fonts.gstatic.com',
-            crossorigin: 'true',
-          },
-        },
-        {
-          tag: 'link',
-          attrs: {
-            rel: 'stylesheet',
-            href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap',
-          },
-        },
-      ],
+      head,
     }),
   ],
   vite: {

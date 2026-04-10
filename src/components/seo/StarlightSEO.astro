@@ -1,0 +1,17 @@
+---
+import Starlight from '@astrojs/starlight/components/Starlight.astro';
+import { SITE } from '../../config/seo';
+import type { Props } from '@astrojs/starlight/Components/Starlight.astro';
+
+// Override Starlight to add proper SEO
+---
+
+<Starlight {...Astro.props} />
+
+<style>
+  /* Ensure Nothing Design styles apply to Starlight */
+  :root {
+    --sl-color-text-accent: #00f2ff;
+    --sl-color-link: #00f2ff;
+  }
+</style>
