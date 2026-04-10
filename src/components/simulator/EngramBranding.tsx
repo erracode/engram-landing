@@ -105,8 +105,8 @@ export function EngramBranding() {
             text={letter}
             textures={letterTextures[idx]}
             baseGradientMap={baseGradientMap}
-            // Position at Y=0.49 since cube is 0.98 tall, resting exactly on top
-            position={[xPos, 0.49, -9.5]}
+            // Position at Y=0.49, moved closer to visible area
+            position={[xPos, 0.49, -7]}
             onInteract={() => {
               const openWindow = useMemoryStore.getState().openWindow
               openWindow('KERNEL', 'Kernel Interface', '## Kernel Interface\n\nThe Engram kernel provides persistent memory for AI agents, enabling context retention across sessions.')

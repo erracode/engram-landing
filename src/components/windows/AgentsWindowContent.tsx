@@ -1,4 +1,4 @@
-import { Check, Zap, Bot, Code2, MousePointer2, Wind } from 'lucide-react'
+import { Check, Zap, Bot, Code2, MousePointer2, Wind, Terminal } from 'lucide-react'
 
 export function AgentsWindowContent() {
   const agents = [
@@ -15,7 +15,7 @@ export function AgentsWindowContent() {
     <div className="space-y-6 text-[#e8e8e8]">
       <div className="border border-[#222222] bg-[#111111] p-6 flex items-start gap-4">
         <div className="p-3 bg-[#000000] border border-[#333333] hidden sm:block">
-          <Plug width={32} height={32} className="text-[#bc13fe]" />
+          <Zap width={32} height={32} className="text-[#bc13fe]" />
         </div>
         <div>
           <h2 className="text-xl font-mono text-[#ffffff] mb-2">Works with every agent you already use.</h2>
@@ -38,7 +38,7 @@ export function AgentsWindowContent() {
         ))}
         
         <div className="border border-[#222222] p-4 bg-[#111111] flex flex-col justify-center items-center text-center">
-          <Script width={24} height={24} className="text-[#2596be] mb-2" />
+          <Terminal width={24} height={24} className="text-[#2596be] mb-2" />
           <span className="font-mono text-sm font-bold">Any MCP Agent</span>
           <p className="font-mono text-xs text-[#999999] opacity-80">Standard protocol: engram mcp</p>
         </div>

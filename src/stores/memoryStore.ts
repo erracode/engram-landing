@@ -53,6 +53,7 @@ interface MemoryStore {
   toggleMinimize: (id: string) => void
   toggleMaximize: (id: string) => void
   updateWindowPosition: (id: string, position: WindowPosition) => void
+  updateWindowSize: (id: string, size: WindowSize) => void
   focusWindow: (id: string) => void
   closeAllWindows: () => void
   restoreMinimizedWindow: (id: string) => void
@@ -119,9 +120,9 @@ const DEFAULT_WINDOW_CONFIG: Record<string, { title: string; position: WindowPos
     size: { width: 880, height: 680 }
   },
   welcome: {
-    title: 'THE BRAIN',
-    position: { x: Math.max(20, window.innerWidth / 2 - 400), y: 100 },
-    size: { width: 700, height: 420 },
+    title: 'WELCOME',
+    position: { x: 24, y: Math.max(60, window.innerHeight - 340) },
+    size: { width: 420, height: 280 },
   },
   agentsCompatibility: {
     title: 'AGENTS COMPATIBILITY',
@@ -249,6 +250,17 @@ export const useMemoryStore = create<MemoryStore>()((set, get) => ({
       },
     })),
 
+  updateWindowSize: (id, size) =>
+    set((state) => ({
+      activeWindows: {
+        ...state.activeWindows,
+        [id]: {
+          ...state.activeWindows[id],
+          size,
+        },
+      },
+    })),
+
   focusWindow: (id) =>
     set((state) => ({
       focusedWindowId: id,
@@ -317,8 +329,6 @@ export function startSimulation() {
   store.addLog(SAMPLE_LOGS[0])
   store.incrementMemories()
 
-  // Open default windows
+  // Open only the Welcome window by default (in bottom-left corner)
   store.openWindow('welcome', DEFAULT_WINDOW_CONFIG.welcome.title, '')
-  store.openWindow('agentsCompatibility', DEFAULT_WINDOW_CONFIG.agentsCompatibility.title, '')
-  store.openWindow('socialProof', DEFAULT_WINDOW_CONFIG.socialProof.title, '')
 }

@@ -1,4 +1,5 @@
-import { Users, Heart, Star, GitPullRequest } from 'lucide-react'
+import { Star, GitPullRequest } from 'lucide-react'
+import { Users, Heart } from 'pixelarticons/react'
 
 export function SocialProofContent() {
   return (

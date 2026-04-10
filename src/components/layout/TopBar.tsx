@@ -23,9 +23,37 @@ const NAV_ITEMS = [
 ]
 
 function ElephantIcon() {
+  // Pixel-art elephant face (front view) on 16x16 grid
+  // Features: rounded head, big ears on sides, two eyes, trunk hanging down, small tusks
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M7 2h10v2h2v4h-2v2h-2v2H9v-2H7V8H5V4h2V2zm0 2H5v4h2V4zm10 0v4h2V4h-2zM9 8h6v2h2v2H7v-2h2V8zm-2 4v2H5v-2h2zm10 0v2h-2v-2h2zm-8 4v-2h6v2H9zm0 0v2h-2v-2h2zm6 0v2h-2v-2h2zm-4 4v-2h2v2h-2zm0 0h2v2h-2v-2z" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 16 16" fill="currentColor" shapeRendering="crispEdges">
+      {/* Left ear */}
+      <rect x="0" y="3" width="2" height="4" />
+      <rect x="1" y="2" width="1" height="1" />
+      <rect x="1" y="7" width="1" height="1" />
+      {/* Right ear */}
+      <rect x="14" y="3" width="2" height="4" />
+      <rect x="14" y="2" width="1" height="1" />
+      <rect x="14" y="7" width="1" height="1" />
+      {/* Head top */}
+      <rect x="4" y="1" width="8" height="1" />
+      <rect x="3" y="2" width="10" height="1" />
+      {/* Head sides + fill */}
+      <rect x="2" y="3" width="12" height="6" />
+      {/* Eyes (cut out via darker color) */}
+      <rect x="4" y="4" width="2" height="2" fill="#00f2ff" />
+      <rect x="10" y="4" width="2" height="2" fill="#00f2ff" />
+      {/* Forehead detail */}
+      <rect x="7" y="3" width="2" height="1" fill="#bc13fe" />
+      {/* Trunk */}
+      <rect x="6" y="9" width="4" height="1" />
+      <rect x="7" y="10" width="2" height="1" />
+      <rect x="7" y="11" width="2" height="1" />
+      <rect x="7" y="12" width="2" height="1" />
+      <rect x="6" y="13" width="2" height="1" />
+      {/* Tusks */}
+      <rect x="5" y="8" width="1" height="3" fill="#e8e8e8" />
+      <rect x="10" y="8" width="1" height="3" fill="#e8e8e8" />
     </svg>
   )
 }
@@ -62,8 +90,7 @@ export function TopBar() {
         userSelect: 'none',
       }}
     >
-      {/* Left: Brand */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="group">
         <div style={{ color: '#bc13fe' }}>
           <ElephantIcon />
         </div>
@@ -85,9 +112,8 @@ export function TopBar() {
             marginLeft: '12px',
             textTransform: 'uppercase',
             letterSpacing: '0.02em',
-            display: 'none',
           }}
-          className="sm:inline-block"
+          className="hidden sm:inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
           An elephant never forgets. █
         </span>

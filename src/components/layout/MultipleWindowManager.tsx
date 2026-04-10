@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, Minus, Square, ExternalLink } from 'lucide-react'
 import { useMemoryStore } from '../../stores/memoryStore'
@@ -72,22 +72,92 @@ function MDXWindow({
 }: MDXWindowProps) {
   const windowRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isResizing, setIsResizing] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const resizeStartRef = useRef({ x: 0, width: 0 })
+  const rafRef = useRef<number | null>(null)
   
   // Track window position
   const { updateWindowPosition } = useMemoryStore()
   
+  // Drag functionality (from title bar)
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isMaximized) return
     e.preventDefault()
     setIsDragging(true)
-    // Store the initial mouse position and current window position
     setDragOffset({
       x: e.clientX - position.x,
       y: e.clientY - position.y,
     })
   }
   
+  // Resize functionality (from resize handle) - PostHog pattern
+  const handleResizeStart = (e: React.MouseEvent) => {
+    if (isMaximized) return
+    e.preventDefault()
+    e.stopPropagation()
+    setIsResizing(true)
+    resizeStartRef.current = {
+      x: e.clientX,
+      width: size.width
+    }
+    document.body.classList.add('is-resizing')
+  }
+  
+  const handleResizeMove = useCallback((clientX: number) => {
+    if (!isResizing || !windowRef.current) return
+    
+    // Cancel any ongoing animation frame
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current)
+    }
+    
+    // Schedule new frame for smooth animation
+    rafRef.current = requestAnimationFrame(() => {
+      const deltaX = clientX - resizeStartRef.current.x
+      const newWidth = Math.min(Math.max(resizeStartRef.current.width + deltaX, 320), window.innerWidth - position.x)
+      
+      // Apply directly to DOM for smoother animation
+      if (windowRef.current) {
+        windowRef.current.style.width = `${newWidth}px`
+        windowRef.current.style.height = 'auto'
+      }
+      
+      rafRef.current = null
+    })
+  }, [isResizing, position.x])
+  
+  const handleResizeEnd = useCallback(() => {
+    if (isResizing && windowRef.current) {
+      const newWidth = parseInt(windowRef.current.style.width) || size.width
+      useMemoryStore.getState().updateWindowSize(id, { width: newWidth, height: size.height })
+      
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
+      }
+    }
+    setIsResizing(false)
+    document.body.classList.remove('is-resizing')
+  }, [isResizing, id, size])
+  
+  // Apply resize handlers via useEffect
+  useEffect(() => {
+    if (!isResizing) return
+    
+    const handleMouseMove = (e: MouseEvent) => handleResizeMove(e.clientX)
+    const handleMouseUp = () => handleResizeEnd()
+    
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isResizing, handleResizeMove, handleResizeEnd])
+  
+  // Drag handlers
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging) return
@@ -179,6 +249,17 @@ function MDXWindow({
           <div
             className="max-w-none"
             dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )}
+        
+        {/* Resize handle - PostHog style */}
+        {!isMaximized && (
+          <div
+            onMouseDown={handleResizeStart}
+            className="absolute top-0 right-0 w-1 h-full cursor-ew-resize hover:bg-[#00f2ff] transition-colors"
+            style={{
+              background: 'rgba(51,51,51,0.5)',
+            }}
           />
         )}
       </div>

@@ -5,10 +5,10 @@ export function WelcomeWindowContent() {
     <div className="space-y-6 text-[#e8e8e8]">
       <div className="border border-[#222222] bg-[#111111] p-6 text-center">
         <h2 className="text-2xl font-mono text-[#ffffff] mb-2 tracking-tight">ENGRAM: The brain for your agent</h2>
-        <p className="text-[#999999] mb-4">Your AI coding agent forgets everything when the session ends... Engram gives it a persistent, searchable memory layer.</p>
+        <p className="text-[#999999] mb-4">The problem: Your agent forgets everything when the session ends... Engram gives your agent a persistent, searchable memory layer.</p>
         <div className="bg-[#000000] border border-[#333333] p-4 font-mono text-[#2596be] flex items-center justify-center gap-3">
           <Terminal size={18} className="text-[#999999]" />
-          <span>$ brew install gentleman-programming/tap/engram</span>
+          <span>$ brew install engram _</span>
         </div>
       </div>
       

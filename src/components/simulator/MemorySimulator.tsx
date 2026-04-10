@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
+import { useEffect, useRef } from 'react'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { TilesetGrid } from './TilesetGrid'
 import { EngramBranding } from './EngramBranding'
@@ -13,12 +13,44 @@ function IsometricCamera() {
     if (!(camera instanceof THREE.OrthographicCamera)) return
     
     camera.position.set(40, 35, 40)
-    camera.zoom = 60
+    camera.zoom = 36
     camera.lookAt(0, 0, 0)
     camera.updateProjectionMatrix()
   }, [camera])
   
   return null
+}
+
+/**
+ * Wraps the entire scene in a group that rises from below
+ * with a smooth eased animation on mount.
+ */
+function SceneEntrance({ children }: { children: React.ReactNode }) {
+  const groupRef = useRef<THREE.Group>(null)
+  const progressRef = useRef(0)
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return
+    if (progressRef.current >= 1) return
+
+    // Smooth ease-out cubic: accelerate then decelerate
+    progressRef.current = Math.min(1, progressRef.current + delta * 0.6)
+    const t = progressRef.current
+    const eased = 1 - Math.pow(1 - t, 3) // ease-out cubic
+
+    // Rise from y = -10 to y = 0
+    groupRef.current.position.y = -10 * (1 - eased)
+    
+    // Slight scale-up for dramatic effect
+    const scale = 0.85 + 0.15 * eased
+    groupRef.current.scale.setScalar(scale)
+  })
+
+  return (
+    <group ref={groupRef} position={[0, -10, 0]} scale={0.85}>
+      {children}
+    </group>
+  )
 }
 
 export function MemorySimulator() {
@@ -28,7 +60,7 @@ export function MemorySimulator() {
       orthographic
       camera={{
         position: [40, 35, 40],
-        zoom: 60,
+        zoom: 36,
         near: 0.1,
         far: 800,
       }}
@@ -59,12 +91,12 @@ export function MemorySimulator() {
       {/* Ambient shadow/mood */}
       <ambientLight color="#020202" intensity={0.05} />
 
-
-      <TilesetGrid />
-      <EngramBranding />
-      <ArchitectureSchematics />
-      <ElephantCore />
+      <SceneEntrance>
+        <TilesetGrid />
+        <EngramBranding />
+        <ArchitectureSchematics />
+        <ElephantCore />
+      </SceneEntrance>
     </Canvas>
   )
 }
-
