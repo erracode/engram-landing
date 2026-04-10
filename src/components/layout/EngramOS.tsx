@@ -9,6 +9,38 @@ function DesktopShortcuts() {
 
   const shortcuts = [
     {
+      label: 'HOME',
+      onClick: () => openWindow('welcome', 'WELCOME', ''),
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" shapeRendering="crispEdges">
+          <rect x="10" y="2" width="4" height="2" />
+          <rect x="8" y="4" width="8" height="2" />
+          <rect x="6" y="6" width="12" height="2" />
+          <rect x="4" y="8" width="16" height="2" />
+          <rect x="2" y="10" width="20" height="2" fill="#00f2ff" />
+          <rect x="4" y="12" width="16" height="10" />
+          <rect x="10" y="14" width="4" height="8" fill="#000" />
+        </svg>
+      ),
+    },
+    {
+      label: 'ARCH',
+      onClick: () => openWindow('architecture', 'ARCHITECTURE', ''),
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" shapeRendering="crispEdges">
+          <rect x="4" y="4" width="4" height="4" />
+          <rect x="10" y="4" width="4" height="4" />
+          <rect x="16" y="4" width="4" height="4" />
+          <rect x="4" y="10" width="4" height="4" fill="#bc13fe" />
+          <rect x="10" y="10" width="4" height="4" />
+          <rect x="16" y="10" width="4" height="4" fill="#00f2ff" />
+          <rect x="4" y="16" width="4" height="4" />
+          <rect x="10" y="16" width="4" height="4" />
+          <rect x="16" y="16" width="4" height="4" />
+        </svg>
+      ),
+    },
+    {
       label: 'AGENTS',
       onClick: () => openWindow('agentsCompatibility', 'AGENTS COMPATIBILITY', ''),
       icon: (
@@ -23,6 +55,46 @@ function DesktopShortcuts() {
           <rect x="6" y="16" width="2" height="6" />
           <rect x="16" y="16" width="2" height="6" />
           <rect x="8" y="14" width="8" height="2" />
+        </svg>
+      ),
+    },
+    {
+      label: 'TOOLS',
+      onClick: () => openWindow('mcpTools', '15 MCP TOOLS', ''),
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" shapeRendering="crispEdges">
+          <rect x="12" y="2" width="2" height="6" fill="#00f2ff" />
+          <rect x="10" y="8" width="8" height="2" fill="#00f2ff" />
+          <rect x="8" y="10" width="10" height="2" fill="#00f2ff" />
+          <rect x="6" y="12" width="8" height="2" fill="#bc13fe" />
+          <rect x="10" y="14" width="2" height="8" fill="#bc13fe" />
+        </svg>
+      ),
+    },
+    {
+      label: 'TUI',
+      onClick: () => openWindow('tui', 'TERMINAL UI', ''),
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" shapeRendering="crispEdges">
+          <rect x="2" y="4" width="20" height="16" />
+          <rect x="4" y="6" width="16" height="12" fill="#000" />
+          <rect x="6" y="9" width="4" height="2" fill="#00f2ff" />
+          <rect x="7" y="11" width="2" height="1" fill="#00f2ff" />
+          <rect x="10" y="13" width="6" height="2" fill="#bc13fe" />
+        </svg>
+      ),
+    },
+    {
+      label: 'SYNC',
+      onClick: () => openWindow('gitSync', 'SYNC & SEARCH', ''),
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" shapeRendering="crispEdges">
+          <rect x="4" y="6" width="8" height="2" fill="#00f2ff" />
+          <rect x="12" y="4" width="2" height="6" fill="#00f2ff" />
+          <rect x="10" y="16" width="8" height="2" fill="#bc13fe" />
+          <rect x="8" y="14" width="2" height="6" fill="#bc13fe" />
+          <rect x="4" y="10" width="2" height="4" />
+          <rect x="18" y="10" width="2" height="4" />
         </svg>
       ),
     },

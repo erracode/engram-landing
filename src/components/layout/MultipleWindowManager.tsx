@@ -58,6 +58,12 @@ interface MDXWindowProps {
 import { WelcomeWindowContent } from '../windows/WelcomeWindowContent'
 import { AgentsWindowContent } from '../windows/AgentsWindowContent'
 import { SocialProofContent } from '../windows/SocialProofContent'
+import { KernelWindowContent } from '../windows/KernelWindowContent'
+import { InstallWindowContent } from '../windows/InstallWindowContent'
+import { ArchitectureWindowContent } from '../windows/ArchitectureWindowContent'
+import { McpToolsWindowContent } from '../windows/McpToolsWindowContent'
+import { SyncWindowContent } from '../windows/SyncWindowContent'
+import { TuiWindowContent } from '../windows/TuiWindowContent'
 
 function MDXWindow({
   id,
@@ -203,16 +209,26 @@ function MDXWindow({
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
       className="absolute bg-[#111111] border border-[#222222] rounded-md overflow-hidden pointer-events-auto z-50 flex flex-col shadow-2xl"
+      style={{
+        backgroundImage: 'radial-gradient(circle, #1a1a1a 1px, transparent 1px)',
+        backgroundSize: '16px 16px',
+      }}
     >
       {/* Title bar */}
       <div
         className={`h-10 bg-[#111111] border-b border-[#222222] flex items-center justify-between px-4 select-none shrink-0 ${
           isMaximized ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'
         }`}
+        style={{
+          backgroundImage: 'radial-gradient(circle, #222222 1px, transparent 1px)',
+          backgroundSize: '8px 8px',
+        }}
         onMouseDown={handleMouseDown}
       >
         <div className="flex items-center gap-2">
-          <span className="text-[#e8e8e8] font-mono text-sm font-bold">{title}</span>
+          <span className="text-[#ffffff] font-bold" style={{ fontFamily: "'Doto', 'Space Mono', monospace", fontSize: '13px', letterSpacing: '0.05em' }}>
+            {title}
+          </span>
         </div>
         
         <div className="flex items-center gap-2">
@@ -245,6 +261,18 @@ function MDXWindow({
           <AgentsWindowContent />
         ) : id === 'socialProof' ? (
           <SocialProofContent />
+        ) : id === 'kernel' ? (
+          <KernelWindowContent />
+        ) : id === 'installation' ? (
+          <InstallWindowContent />
+        ) : id === 'architecture' ? (
+          <ArchitectureWindowContent />
+        ) : id === 'mcpTools' ? (
+          <McpToolsWindowContent />
+        ) : id === 'gitSync' ? (
+          <SyncWindowContent />
+        ) : id === 'tui' ? (
+          <TuiWindowContent />
         ) : (
           <div
             className="max-w-none"

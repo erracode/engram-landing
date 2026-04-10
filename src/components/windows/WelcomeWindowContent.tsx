@@ -3,12 +3,32 @@ import { Download, Terminal } from 'lucide-react'
 export function WelcomeWindowContent() {
   return (
     <div className="space-y-6 text-[#e8e8e8]">
-      <div className="border border-[#222222] bg-[#111111] p-6 text-center">
-        <h2 className="text-2xl font-mono text-[#ffffff] mb-2 tracking-tight">ENGRAM: The brain for your agent</h2>
-        <p className="text-[#999999] mb-4">The problem: Your agent forgets everything when the session ends... Engram gives your agent a persistent, searchable memory layer.</p>
-        <div className="bg-[#000000] border border-[#333333] p-4 font-mono text-[#2596be] flex items-center justify-center gap-3">
-          <Terminal size={18} className="text-[#999999]" />
-          <span>$ brew install engram _</span>
+      <div className="border border-[#222222] bg-[#111111] p-6 text-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #bc13fe 1px, transparent 1px)', backgroundSize: '12px 12px' }} />
+        <h2 className="text-2xl font-mono text-[#ffffff] mb-1 tracking-tight" style={{ fontFamily: "'Doto', monospace" }}>ENGRAM</h2>
+        <p className="text-[#666] text-[10px] uppercase tracking-[0.2em] mb-4">An elephant never forgets.</p>
+        
+        <div className="mb-6 max-w-lg mx-auto">
+          <p className="text-xs italic text-[#999] mb-2">
+            <strong>engram</strong> <span className="text-[#666]">/ˈen.ɡræm/</span> — <span className="text-[#00f2ff]">neuroscience</span>: the physical trace of a memory in the brain.
+          </p>
+          <p className="text-sm text-[#e8e8e8] leading-relaxed">
+            Your AI coding agent forgets everything when the session ends.<br/>
+            <strong>Engram gives it a brain.</strong>
+          </p>
+        </div>
+
+        <div 
+          className="bg-[#000000] border border-[#333333] p-4 font-mono text-[#2596be] flex items-center justify-between gap-3 group cursor-pointer relative z-10"
+          onClick={() => {
+            navigator.clipboard.writeText('brew install gentleman-programming/tap/engram');
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <Terminal size={18} className="text-[#999999]" />
+            <span className="text-sm">$ brew install gentleman-programming/tap/engram</span>
+          </div>
+          <button className="text-[10px] text-[#666] group-hover:text-white transition-colors">[COPY]</button>
         </div>
       </div>
       

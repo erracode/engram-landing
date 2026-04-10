@@ -46,14 +46,15 @@ function StationLabel({ text, secondary, yOffset = 1.2 }: { text: string; second
           background: 'rgba(0, 0, 0, 0.92)',
           border: '1px solid #333333',
           padding: '5px 14px',
-          fontFamily: "'JetBrains Mono', 'Space Mono', monospace",
+          fontFamily: "'Doto', 'Space Mono', monospace",
           whiteSpace: 'nowrap',
+          boxShadow: '0 0 10px rgba(0,0,0,0.5)',
         }}>
           <span style={{
-            fontSize: '13px', fontWeight: 700, color: '#E8E8E8',
-            letterSpacing: '0.1em', textTransform: 'uppercase',
+            fontSize: '14px', fontWeight: 700, color: '#E8E8E8',
+            letterSpacing: '0.05em', textTransform: 'uppercase',
           }}>
-            [ {text} ]
+            {text}
           </span>
           {secondary && (
             <div style={{
@@ -277,7 +278,7 @@ function PersistenceVault() {
       onClick={(e) => { 
         e.stopPropagation()
         const openWindow = useMemoryStore.getState().openWindow
-        openWindow('INSTALL', 'Installation', content)
+        openWindow('installation', 'INSTALLATION', '')
       }}
     >
       {[[-0.5, 0.48, -0.5], [0.5, 0.48, -0.5], [-0.5, 0.48, 0.5], [0.5, 0.48, 0.5]].map((pos, i) => (
@@ -333,7 +334,7 @@ function SearchTower() {
       onClick={(e) => { 
         e.stopPropagation()
         const openWindow = useMemoryStore.getState().openWindow
-        openWindow('SYNC', 'Git Synchronization', content)
+        openWindow('gitSync', 'SYNC & SEARCH', '')
       }}
     >
       {[0.48, 1.52, 2.56].map((y, i) => (
@@ -392,7 +393,7 @@ function TuiTerminal() {
       onClick={(e) => { 
         e.stopPropagation()
         const openWindow = useMemoryStore.getState().openWindow
-        openWindow('TUI', 'Text User Interface', content)
+        openWindow('tui', 'TERMINAL UI', '')
       }}
     >
       <mesh position={[0, 0.25, 0]} material={mats} castShadow receiveShadow>
@@ -432,7 +433,7 @@ function McpAntenna() {
       onClick={(e) => { 
         e.stopPropagation()
         const openWindow = useMemoryStore.getState().openWindow
-        openWindow('TOOLS', 'MCP Tools', content)
+        openWindow('mcpTools', '15 MCP TOOLS', '')
       }}
     >
       <mesh position={[0, 1.5, 0]} castShadow>
