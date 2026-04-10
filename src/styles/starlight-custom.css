@@ -51,6 +51,12 @@ html.dark :root,
   --sl-color-bg-nav: var(--nd-black);
   --sl-color-bg-sidebar: var(--nd-surface);
   
+  /* Active Sidebar Item — WHITE TEXT ON SURFACE-RAISED */
+  --sl-color-sidebar-current-bg: var(--nd-surface-raised);
+  --sl-color-sidebar-current-text: var(--nd-text-display);
+  --sl-color-sidebar-active-bg: var(--nd-surface-raised);
+  --sl-color-sidebar-active-text: var(--nd-text-display);
+  
   /* Borders & Dividers */
   --sl-color-hairline-light: var(--nd-border);
   --sl-color-hairline: var(--nd-border-visible);
@@ -203,4 +209,92 @@ a:hover,
 .sl-link:hover,
 .sl-markdown-content a:hover {
   color: var(--nd-purple-neon);
+}
+
+/* ========== ACTIVE SIDEBAR NAVIGATION - MAXIMUM CONTRAST ========== */
+/* Force WHITE text (#ffffff) on ACTIVE sidebar items */
+
+/* Override Starlight CSS variables for active sidebar items */
+html.dark {
+  --sl-color-sidebar-current-text: #ffffff !important;
+  --sl-color-sidebar-active-text: #ffffff !important;
+  --sl-color-sidebar-current-bg: var(--nd-surface-raised) !important;
+  --sl-color-sidebar-active-bg: var(--nd-surface-raised) !important;
+}
+
+/* Direct CSS override for active navigation links */
+.sl-nav .sl-menu-item.sl-active .sl-link,
+.sl-nav .sl-menu-item[aria-current="page"] .sl-link {
+  color: #ffffff !important;
+  background: var(--nd-surface-raised) !important;
+}
+
+/* Ensure all child elements of active links are white */
+.sl-nav .sl-menu-item.sl-active .sl-link *,
+.sl-nav .sl-menu-item[aria-current="page"] .sl-link * {
+  color: #ffffff !important;
+}
+
+/* Override all possible active state selectors */
+:where(.sl-nav-items) :where(.sl-link):where(.sl-active),
+:where(.sl-nav-items) :where(.sl-link)[aria-current="page"] {
+  color: #ffffff !important;
+  background: var(--nd-surface-raised) !important;
+}
+
+:where(.sl-nav-items) :where(.sl-link):where(.sl-active) *,
+:where(.sl-nav-items) :where(.sl-link)[aria-current="page"] * {
+  color: #ffffff !important;
+}
+
+/* Force white on anchor elements within active menu items */
+.sl-nav .sl-menu-item.sl-active a,
+.sl-nav .sl-menu-item[aria-current="page"] a {
+  color: #ffffff !important;
+}
+
+/* Final comprehensive override for all active navigation elements */
+.sl-nav .sl-menu-item.sl-active,
+.sl-nav .sl-menu-item[aria-current="page"] {
+  color: #ffffff !important;
+  background: var(--nd-surface-raised) !important;
+}
+
+.sl-nav .sl-menu-item.sl-active *,
+.sl-nav .sl-menu-item[aria-current="page"] * {
+  color: #ffffff !important;
+}
+
+/* Force white color on active state with maximum specificity */
+.sl-link.sl-active,
+.sl-link[aria-current="page"],
+a[aria-current="page"] {
+  color: #ffffff !important;
+  background: var(--nd-surface-raised) !important;
+}
+
+.sl-link.sl-active *,
+.sl-link[aria-current="page"] *,
+a[aria-current="page"] * {
+  color: #ffffff !important;
+}
+
+/* Override Starlight's internal CSS variables */
+:where(.sl-menu-item:where(.sl-active)) {
+  --sl-color-text: #ffffff !important;
+  --sl-color-text-primary: #ffffff !important;
+  color: #ffffff !important;
+}
+
+:where(.sl-menu-item:where(.sl-active)) * {
+  color: #ffffff !important;
+}
+
+/* Force white on any element with sl-active class */
+.sl-active {
+  color: #ffffff !important;
+}
+
+.sl-active * {
+  color: #ffffff !important;
 }
