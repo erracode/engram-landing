@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.3",
-    "@astrojs/starlight": "^0.38.3",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tailwindcss/vite": "^4.2.2",
@@ -29,5 +28,8 @@
     "tailwindcss": "^4.2.2",
     "three": "^0.183.2",
     "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "^0.38.3"
   }
 }

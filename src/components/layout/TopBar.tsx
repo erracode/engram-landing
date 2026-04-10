@@ -3,10 +3,10 @@ import { MDX_CONTENT_MAP } from '../../utils/mdxContentMap'
 
 
 const NAV_ITEMS = [
-  { id: 'docs-ext', label: 'Docs', title: 'DOCS', href: 'https://engram-page.vercel.app/getting-started/', external: true },
-  { id: 'github-ext', label: 'GitHub', title: 'GITHUB', href: 'https://github.com/Gentleman-Programming/engram', external: true },
-  { id: 'discord-ext', label: 'Discord', title: 'DISCORD', href: 'https://discord.com/invite/3QVhF5vRsR', external: true },
-  { id: 'youtube-ext', label: 'YouTube', title: 'YOUTUBE', href: 'https://www.youtube.com/@GentlemanProgramming', external: true },
+  { id: 'docs', label: 'Docs', href: '/docs', isRoute: true },
+  { id: 'github-ext', label: 'GitHub', href: 'https://github.com/Gentleman-Programming/engram', external: true },
+  { id: 'discord-ext', label: 'Discord', href: 'https://discord.com/invite/3QVhF5vRsR', external: true },
+  { id: 'youtube-ext', label: 'YouTube', href: 'https://www.youtube.com/@GentlemanProgramming', external: true },
 ]
 
 function ElephantIcon() {
@@ -51,11 +51,22 @@ export function TopBar() {
   const activeWindows = useMemoryStore((s) => s.activeWindows)
 
   const toggle = (item: typeof NAV_ITEMS[0]) => {
+    // Handle route links (like /docs)
+    if (item.id === 'docs') {
+      window.location.href = item.href
+      return
+    }
+    // Handle external links
+    if (item.external) {
+      window.open(item.href, '_blank')
+      return
+    }
+    // Handle window toggle (items with title and content)
     const isOpen = activeWindows[item.id] && activeWindows[item.id].isOpen
     if (isOpen) {
       closeWindow(item.id)
     } else {
-      openWindow(item.id, item.title, item.content)
+      openWindow(item.id, (item as any).title, (item as any).content)
     }
   }
 
